@@ -1,1 +1,5 @@
-Fica usando o arquivo test.txt por equanto
+# QMST Problem - NP Hard Project
+
+## Autores
++ Felipe Ramos
++ Paulo Medeiros

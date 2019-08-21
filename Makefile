@@ -1,4 +1,4 @@
-# Makefile for the PAA Project
+# Makefile for the PAA NP-Hard project
 
 # Authors:
 # Felipe Ramos
@@ -32,11 +32,6 @@ project: $(OBJECTS) $(HEADERS) | $(BINDIR)
 	$(CC) $(OBJECTS) $(CFLAGS) -o $(BINDIR)/$(PROJ_NAME)
 	@ln -sfv $(BINDIR)/$(PROJ_NAME) $(PROJ_NAME)
 
-docs:
-	@mkdir -p $(DOCDIR)
-	@doxygen config
-	@ln -sfv $(DOCDIR)/html/index.html $(DOC_NAME)
-
 $(OBJECTS): $(OBJDIR)/%.o : $(SRCDIR)/%.cpp $(HEADERS) | $(OBJDIR)
 	$(CC) $(CFLAGS) -c $< -o $@
 
@@ -47,9 +42,9 @@ $(BINDIR):
 	@mkdir -p $(BINDIR)
 
 # Clean PHONY targets
-.PRONY: clean clean_proj clean_doc
+.PRONY: clean clean_proj
 
-clean: clean_proj clean_doc
+clean: clean_proj
 
 clean_proj:
 	@echo "Removing OBJDIR..."
@@ -59,8 +54,3 @@ clean_proj:
 	@echo "Removing symlink..."
 	@$(RM) -f $(PROJ_NAME)
 	@echo "Clean-up completed!"
-
-clean_doc:
-	@echo "Removing documentation files..."
-	@$(RM) -r Documentation/
-	@$(RM) -f $(DOC_NAME) 
