@@ -50,7 +50,7 @@ def parseFile(filename = "tests/10-30/n010d033C010c001Q010q001s-3i1.txt"):
 
         return (params, sets)
 
-FILENAME = ""
+FILENAME = sys.argv[1]
 
 params, sets = [], []
 if not len(FILENAME):
@@ -72,29 +72,29 @@ params['q'] = [(removeBrack(evenEl), oddEl) for evenEl, oddEl in zip(even, odd)]
 params['c'] = [(removeBrack(evenEl), oddEl) for evenEl, oddEl in zip(evenC, oddC)]
 
 
-outputFilename = "test.txt"
+outputFilename = 'tests/converted/' + re.search(r'\w+\-\w+\.\w+$', sys.argv[1])[0]
 outputFile = open(outputFilename, 'w')
 
 for key in params:
-    print('#'+ ' ' + key)
+    #  print('#'+ ' ' + key)
     outputFile.write("# " + key + "\n")
     if type(params[key]) == type(list()):
         for value in params[key]:
             line = " ".join(value[0]) + " " + " ".join(value[1])
             outputFile.write(line + "\n")
-            print(line)
+            #  print(line)
 
     else:
-        print(params[key])
+        #  print(params[key])
         outputFile.write(str(params[key]) + "\n")
 
-print("# Edges")
+#  print("# Edges")
 outputFile.write("# Edges\n")
 
 for se in sets:
     t = " ".join(map(str, se))
     outputFile.write(t + "\n")
-    print(t)
+    #  print(t)
 
-print('# eof')
+#  print('# eof')
 outputFile.write("# eof")
