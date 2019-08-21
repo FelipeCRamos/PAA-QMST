@@ -18,7 +18,6 @@ typedef std::pair<Aresta, int> Custo;
 typedef std::pair<Aresta, Aresta> ParAresta;
 typedef std::pair<ParAresta, int> CustoQuad;
 
-#define TESTFILE_E "n010d033C010c001Q010q001s-3i1.txt"
 #define PTAG "[AGMQ] "
 
 // Utils
@@ -122,6 +121,7 @@ int main(int argc, char **argv){
     int infoN, infoM;   // são uteis?
     //-------------------------------------------------------------------------
 
+    // LEITURA DO ARQUIVO
     try {
         std::ifstream file(filename);
 
@@ -268,6 +268,7 @@ int main(int argc, char **argv){
             custoFinalQuad += custosQuadDict[std::make_pair(aresta.first, aresta_.first)];
         }
     }
+
     std::cout << "Custo linear calculado: " << custoFinalLinear << std::endl;
     std::cout << "Custo quadratico calculado: " << custoFinalQuad << std::endl;
     std::cout << "Custo total calculado: " << custoFinalLinear + custoFinalQuad << std::endl;
