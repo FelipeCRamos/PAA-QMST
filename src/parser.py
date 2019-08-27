@@ -2,6 +2,7 @@
 
 import sys
 import re
+import pdb
 
 def removeTabsAndDelimiters(string):
     if '\t' in string:
@@ -69,8 +70,8 @@ oddC = params['c'][1::2]
 removeBrack = lambda x: x.replace('[', '').replace(']', '').split(',')
 
 params['q'] = [(removeBrack(evenEl), oddEl) for evenEl, oddEl in zip(even, odd)]
+#  pdb.set_trace()
 params['c'] = [(removeBrack(evenEl), oddEl) for evenEl, oddEl in zip(evenC, oddC)]
-
 
 outputFilename = 'tests/converted/' + re.search(r'\w+\-\w+\.\w+$', sys.argv[1])[0]
 outputFile = open(outputFilename, 'w')
@@ -80,7 +81,11 @@ for key in params:
     outputFile.write("# " + key + "\n")
     if type(params[key]) == type(list()):
         for value in params[key]:
-            line = " ".join(value[0]) + " " + " ".join(value[1])
+            line = ""
+            if key != 'q':
+                line = " ".join(value[0]) + " " + " ".join(value[1])
+            else:
+                line = " ".join(value[0]) + " " + str(value[1])
             outputFile.write(line + "\n")
             #  print(line)
 
