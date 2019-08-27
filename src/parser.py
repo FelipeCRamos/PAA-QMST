@@ -82,10 +82,13 @@ for key in params:
     if type(params[key]) == type(list()):
         for value in params[key]:
             line = ""
-            if key != 'q':
-                line = " ".join(value[0]) + " " + " ".join(value[1])
-            else:
+            if key == 'c':
                 line = " ".join(value[0]) + " " + str(value[1])
+                #  pdb.set_trace()
+            elif key == 'q':
+                line = " ".join(value[0]) + " " + str(value[1])
+            else:
+                line = " ".join(value[0]) + " " + " ".join(value[1])
             outputFile.write(line + "\n")
             #  print(line)
 
