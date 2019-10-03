@@ -30,7 +30,7 @@ private:
         // _m - placed.size(): qnts arestas ainda me restam para por
         //  _n - 1 - placed.size(): qnts arestas eu preciso por para formar arvore
         // se eu preciso por mais do que eu tenho, estou num pos invalida
-        if(_m - placed.size() < _n - 1 - placed.size()) return INF;
+        if(_m - i < _n - 1 - placed.size()) return INF;
 
 
         int ans = INF; // resposta para esse no do backtrack

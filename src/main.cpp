@@ -13,6 +13,7 @@
 #include "helpFn.h"
 #include "fileParser.h"
 #include "backtrack.h"
+#include "branchBound.h"
 
 
 #define PTAG "[AGMQ] "
