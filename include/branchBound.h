@@ -11,33 +11,28 @@
 #define NBITS 100
 
 
-// TODO
-// SABER COMO CALCULAR O LOWER_BOUND DO STATE
-// PRA ENTAO USAR ISSO COMO UM ATRIBUTO/METODO DA STRUCT
-// E ENTAO PODER USAR ISSO NA PRIORITY QUEUE
-// CHECAR SE ESTADO VAI GERAR CICLO PRECISA DO UNION FIND PRA CADA ESTADO
-    // FAZER DFS OU ALGO DO TIPO (UFIND) PRA VER SE GERA CICLO
-// UM POSSIVEL LOWER BOUND EH PEGAR A ARESTA DE PESO MINIMO PARA CADA VERTICE
 struct State{
     int nextEdge;
-    int cost;
-    std::bitset<NBITS> mask;
+    int lowerBound;
+    std::bitset<NBITS> visited, chosen;
 
-    State(int ne, int c, std::bitset<NBITS> bmask){
+    State(int ne, int lb, std::bitset<NBITS> v, std::bitset<NBITS> chos){
         nextEdge = ne;
-        cost = c;
-        mask = bmask;
+        lowerBound = lb;
+        chosen = chos;
+        visited = v;
     }
 };
 
 bool operator <(const State & a, const State & b){
-    if(a.cost == b.cost){
-        if(a.mask.count() == b.mask.count()){
-            return a.nextEdge > b.nextEdge;
-        }
-        return a.mask.count() > b.mask.count();
+    // melhor o no aquele que tem menor lower bound
+    // em caso de empate, pego o no com mais vertices visitados
+    // em caso de empate, pego o que tem a proxima aresta a ser proc com maior id
+    if(a.lb == b.lb){
+        if(a.visited.count() == b.visited.count()) return a.nextEdge > b.nextEdge;
+        return a.visited.count() > b.visited.count();
     }
-    return a.cost < b.cost;
+    return a.lb < b.lb;
 }
 
 class BBoundAlgorithm{
@@ -46,7 +41,6 @@ private:
     int **_costs; // matriz de custos
     std::vector<std::pair<int,int>> _edges; // lista com todas as arestas
     int _m, _n; // qntd de arestas e de nos
-    UnionFind *ufind; // estrutura union find
 
 
     int _bbound(){

@@ -1,5 +1,5 @@
-#ifndef _KRUSKAL_H_
-#define _KRUSKAL_H_
+#ifndef _PB_LOWER_BOUND_H_
+#define _PB_LOWER_BOUND_H_
 
 #include <vector>
 #include <algorithm>
@@ -8,7 +8,7 @@
 
 #define INF 100000
 
-class LowerBound{
+class PBLowerBound{
     private:
         int n, m;
 
@@ -80,11 +80,11 @@ class LowerBound{
 
     public:
 
-        LowerBound(int _n, int _m){
+        PBLowerBound(int _n, int _m){
             n = _n, m = _m;
         }
 
-        ~LowerBound(){
+        ~PBLowerBound(){
 
         }
 
