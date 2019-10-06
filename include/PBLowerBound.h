@@ -88,15 +88,19 @@ class PBLowerBound{
 
         }
 
-        int pb(const std::vector<std::pair<int,int>> edges, \
+        std::pair<int,int> pb(const std::vector<std::pair<int,int>> edges, \
              const std::bitset<NBITS> &visited, const std::bitset<NBITS> &chosen, \
              int *piParameters, int **costs){
+
+            int maxF = 0, minF = INF;
 
             // computing f_i(\pi) costs
             int fCosts = new int[m];
             for(int i = 0; i < m; ++i){
                 UnionFind ufind = new UnionFind(n + 1);
                 fCosts[i] = f_i(edges, visited, chosen, piParameters, costs, i, ufind);
+                maxF = max(maxF, fCosts[i]);
+                minF = min(minF, fCosts[i]);
                 delete ufind;
             }
 
@@ -128,7 +132,7 @@ class PBLowerBound{
 
             int ans = kruskal(kruskalList, edges, ufind, alreadyChosen);
             delete ufind;
-            return ans;
+            return {ans, maxF - minF};
         }
 
 };
