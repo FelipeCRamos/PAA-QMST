@@ -6,7 +6,7 @@ import numpy as np
 import os
 import sys
 
-makeTests = False
+makeTests = True
 
 def isSmallerThan(string):
     try:
