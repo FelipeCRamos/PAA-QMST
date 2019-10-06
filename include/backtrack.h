@@ -30,7 +30,7 @@ private:
         // _m - placed.size(): qnts arestas ainda me restam para por
         //  _n - 1 - placed.size(): qnts arestas eu preciso por para formar arvore
         // se eu preciso por mais do que eu tenho, estou num pos invalida
-        if(_m - i < _n - 1 - placed.size()) return INF;
+        if(_m - placed.size() < _n - 1 - placed.size()) return INF;
 
 
         int ans = INF; // resposta para esse no do backtrack
@@ -58,8 +58,7 @@ private:
         }
 
         // visisto o prox vertice sem adicionar essa aresta e checo se a resposta melhorou
-        ans = std::min(ans, _backtrack(i + 1, cost));
-
+        return std::min(ans, _backtrack(i + 1, cost));
     }
 
 public:

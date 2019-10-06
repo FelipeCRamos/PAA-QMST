@@ -54,12 +54,16 @@ int main(int argc, char **argv){
     std::vector<std::pair<int,int>> edges = parser.getEdges();
 
 
+
     // ------------------------------------------------------------------------
     // PARSING FEITO, GRAFO MONTADO
     // ------------------------------------------------------------------------
 
-    BacktrackAlgorithm b(n, m, edges, costs);
-    std::cout << b.backtrack() << std::endl;
+    // BacktrackAlgorithm b(n, m, edges, costs);
+    // std::cout << b.backtrack() << std::endl;
+
+    BBoundAlgorithm bb(n, m, edges, costs);
+    std::cout << bb.bbound() << std::endl;
 
     return 0;
 }

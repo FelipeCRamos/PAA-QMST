@@ -12,20 +12,21 @@
 #define INF 100000
 #define NBITS 100
 
+#define numType int
 #define edgeListType std::vector<std::pair<int,int>>
 #define maskType std::bitset<NBITS>
 
 struct State{
-    int nextEdge, cost;
-    double lowerBound;
-    maskType visited, chosen, nodes;
+    int nextEdge, cost, alreadyChosen;
+    numType lowerBound;
+    maskType visited, chosen;
 
-    State(int ne, int c, maskType v, maskType chos, maskType nod){
+    State(int ne, int c, maskType v, maskType chos, int ac){
+        alreadyChosen = ac;
         nextEdge = ne;
         cost = c;
         chosen = chos;
         visited = v;
-        nodes = nod;
     }
 
     void computeLB(int n, int m, edgeListType &edges, int **costs){
@@ -67,19 +68,22 @@ private:
         int upper_bound = INF;
         std::priority_queue<State> pq;
 
-        State initalState = State(0, 0, maskType(), maskType(), maskType());
+        State initalState = State(0, 0, maskType(), maskType(), 0);
         initalState.computeLB(_n, _m, _edges, _costs);
         pq.push(initalState);
+
 
         while(!pq.empty()){
             State currentState = pq.top(); // recuperando estado atual
             pq.pop(); // removendo estado recuperado da pq
 
+            // printf("currEdge: %d currCost: %d\n", currentState.nextEdge, currentState.cost);
+
             // nao preciso continuar nesse no se ja uma solucao melhor
             if(currentState.cost > upper_bound) continue;
 
             // se formei uma arvore, atualizo o upper bound se obtive melhor result
-            if(currentState.nodes.count() == _n - 1)
+            if(currentState.alreadyChosen == _n - 1)
                 upper_bound = std::min(upper_bound, currentState.cost);
 
             // se nao tenho mais quem botar e nao completei arvore, cheguei num dead end
@@ -87,7 +91,7 @@ private:
 
             // _m - currentState.nextEdge: quantos arestas consigo por no max
             // _n - 1 - currentState.mask.count(): quantos arestas ainda preciso
-            if(_m - currentState.nextEdge < _n - 1 - currentState.nodes.count()) return INF;
+            if(_m - currentState.nextEdge < _n - 1 - currentState.alreadyChosen) return INF;
 
             // setting union find for checking for cycles
             UnionFindNRB *ufind = new UnionFindNRB(_n+1);
@@ -99,12 +103,13 @@ private:
 
             // setting state of not adding the current edge
             State stateNotAddingEdge = State(currentState.nextEdge + 1, currentState.cost, currentState.visited, \
-                                            currentState.chosen, currentState.nodes);
+                                            currentState.chosen, currentState.alreadyChosen);
             stateNotAddingEdge.visited[currentState.nextEdge] = 1; // visited the current edge
             stateNotAddingEdge.chosen[currentState.nextEdge] = 0; // did not add it to the tree
             stateNotAddingEdge.computeLB(_n, _m, _edges, _costs); // computing lower bound for the state
 
-            pq.push(stateNotAddingEdge); // adding it to the queues
+            if(stateNotAddingEdge.lowerBound != INF)
+                pq.push(stateNotAddingEdge); // adding it to the queues
 
             if(ufind->find(u) != ufind->find(v)){ // posso adicionar sem criar ciclos?
 
@@ -119,15 +124,17 @@ private:
                 // setting state of adding the current edge
                 State stateAddingEdge = State(currentState.nextEdge + 1, currentState.cost + lin_cost + quad_costs, \
                                               currentState.visited, currentState.chosen, \
-                                              currentState.nodes);
+                                              currentState.alreadyChosen);
 
                 stateAddingEdge.visited[currentState.nextEdge] = 1; // visited the current edge
+                stateAddingEdge.alreadyChosen++; // visited the current edge
                 stateAddingEdge.chosen[currentState.nextEdge] = 1; // added it to the tree
-                stateAddingEdge.nodes[u] = 1;
-                stateAddingEdge.nodes[v] = 1;
                 stateAddingEdge.computeLB(_n, _m, _edges, _costs); // computing lower bound for the state
 
-                pq.push(stateAddingEdge); // adding it to the queue
+
+                // printf("%d %d %d\n", currentState.nextEdge, stateAddingEdge.lowerBound, upper_bound );
+                if(stateAddingEdge.lowerBound != INF || stateAddingEdge.lowerBound > upper_bound)
+                    pq.push(stateAddingEdge); // adding it to the queues
             }
 
             delete ufind; // del ufind pointer
