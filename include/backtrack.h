@@ -5,11 +5,11 @@
 #include <algorithm>
 
 #include "unionFind.h"
+#include "defines.h"
 
 
 class BacktrackAlgorithm{
 private:
-    const int INF = 1000000; // valor infinito para
     int **_costs; // matriz de custos
     std::vector<int> placed; // lista de arestas sendo utilizadas no backtrack
     std::vector<std::pair<int,int>> _edges; // lista com todas as arestas
@@ -62,7 +62,7 @@ private:
         }
 
         // visisto o prox vertice sem adicionar essa aresta e checo se a resposta melhorou
-        ans = std::min(ans, _backtrack(i + 1, cost));
+        return std::min(ans, _backtrack(i + 1, cost));
     }
 
 public:

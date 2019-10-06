@@ -13,6 +13,7 @@
 #include <utility>
 #include <algorithm>
 #include <unordered_map>
+#include "defines.h"
 
 namespace std
 {

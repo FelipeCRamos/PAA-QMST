@@ -1,5 +1,6 @@
 #ifndef _UNION_FIND_H_
 #define _UNION_FIND_H_
+#include "defines.h"
 
 #include <stack>
 #include <algorithm>
@@ -29,7 +30,7 @@ class UnionFind{
         }
 
         int find(int current){
-            if(current < _n){
+            if(current <= _n){
                 // ROLLBACK DOESNT HAVE PATH COMPRESSION
                 int new_root = current; // variavel para guardar nova raiz
                 while(new_root != parents[new_root]) // enquanto nao encontro no raiz
@@ -42,7 +43,7 @@ class UnionFind{
         }
 
         void join(int a, int b){
-            if(a < _n && b < _n){
+            if(a <= _n && b <= _n){
                 a = find(a); b = find(b); // unimos uma raiz a outra
 
                 if(a == b) return; // se for a mesma raiz, nao tenho o que unir
@@ -66,6 +67,67 @@ class UnionFind{
                 parents[rb_parent.top().first] = rb_parent.top().second; rb_parent.pop();
             }else{
                 throw "Não é possível fazer rollback com a pilha vazia!";
+            }
+        }
+};
+
+class UnionFindNRB{
+
+    private:
+        int _n;
+        int *sizes;
+        int *parents;
+
+
+    public:
+        UnionFindNRB(int n){
+            _n = n;
+            sizes = new int[_n];
+            parents = new int[_n];
+            for(int i = 0; i < _n; ++i){
+                sizes[i] = 1; // tamanho inicial
+                parents[i] = i; // valor padrao: cada um eh seu pai
+            }
+        }
+
+        ~UnionFindNRB(){
+            delete[] sizes, parents;
+        }
+
+        int find(int current){
+            if(current <= _n){
+                int new_root = current; // variavel para guardar nova raiz
+                while(new_root != parents[new_root]) // enquanto nao encontro no raiz
+                    new_root = parents[new_root]; // subo na arvore
+
+
+                // compressao de caminho (*)
+                int next; // backup do pai
+                while(parents[current] != new_root){ // enquanto nao acho a nova raiz
+                    next = parents[current]; // faco o backup do pai
+                    parents[current] = new_root; // digo que o pai eh a raiz achada (*)
+                    current = next; // subo na arvore pro backup
+                }
+
+                return new_root; // retornamo a raiz da arvore
+
+            }else{
+                throw "Não é possível fazer find num UnionFind vazio!";
+            }
+        }
+
+        void join(int a, int b){
+            if(a <= _n && b <= _n){
+                a = find(a); b = find(b); // unimos uma raiz a outra
+
+                if(a == b) return; // se for a mesma raiz, nao tenho o que unir
+
+                // uniao por tamanho
+                if(sizes[a] < sizes[b]) std::swap(a,b); // quero unir "b" a "a"
+                sizes[a] += sizes[b]; // atualizando tamanho de "a"
+                parents[b] = a; // pai de "b" eh "a"
+            }else{
+                throw "Não é possível fazer union num UnionFind vazio!";
             }
         }
 };

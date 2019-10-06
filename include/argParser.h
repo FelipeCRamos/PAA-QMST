@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include <utility>
+#include "defines.h"
 
 std::string parseFilename(int argc, char **argv) {
     if(argc == 2) {

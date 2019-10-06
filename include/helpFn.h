@@ -4,6 +4,7 @@
 #include <iostream>
 #include <sstream>
 
+#include "defines.h"
 std::string error(std::string errorName, std::string helpText = "") {
     std::stringstream ss;
     ss << "AGMQ: ";
