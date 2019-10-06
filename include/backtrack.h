@@ -15,8 +15,12 @@ private:
     std::vector<std::pair<int,int>> _edges; // lista com todas as arestas
     int _m, _n; // qntd de arestas e de nos
     UnionFind *ufind; // estrutura union find
+    long int counter = 0;
+    bool done = false;
 
     int _backtrack(int i, int cost){
+        counter++;
+
 
         // em backtrack(i, cost) decido se ponho a aresta i na arvore
         // eventualmente, pode ser que i = m se eu pegar a m-1 esima aresta
@@ -59,7 +63,6 @@ private:
 
         // visisto o prox vertice sem adicionar essa aresta e checo se a resposta melhorou
         ans = std::min(ans, _backtrack(i + 1, cost));
-
     }
 
 public:
@@ -85,7 +88,12 @@ public:
     }
 
     int backtrack(){
+        done = true;
         return _backtrack(0, 0);
+    }
+
+    int steps(){
+        return done ? counter : 0;
     }
 };
 
