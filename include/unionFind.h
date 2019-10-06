@@ -13,7 +13,6 @@ class UnionFind{
         int *parents;
         std::stack<std::pair<int,int>> rb_parent, rb_size;
 
-
     public:
         UnionFind(int n){
             _n = n;
@@ -26,7 +25,8 @@ class UnionFind{
         }
 
         ~UnionFind(){
-            delete[] sizes, parents;
+            delete[] sizes;
+            delete[] parents;
         }
 
         int find(int current){
@@ -91,7 +91,15 @@ class UnionFindNRB{
         }
 
         ~UnionFindNRB(){
-            delete[] sizes, parents;
+            delete[] sizes;
+            delete[] parents;
+        }
+
+        void reset() {
+            for(int i = 0; i < _n; ++i){
+                sizes[i] = 1; // tamanho inicial
+                parents[i] = i; // valor padrao: cada um eh seu pai
+            }
         }
 
         int find(int current){

@@ -33,6 +33,7 @@ class LPLowerBound{
         ~LPLowerBound(){
             delete[] piParameters;
             delete pblb;
+            delete fCosts;
         }
 
         numType levelingProcedure(edgeListType edges, maskType &visited, maskType &chosen, \

@@ -26,7 +26,7 @@ class PBLowerBound{
         int n, m;
 
         int kruskal(kruskalListType &kruskalList, edgeListType &edges, \
-                    UnionFind *ufind, int &alreadyChosen, numType &cost){
+                    UnionFindNRB *ufind, int &alreadyChosen, numType &cost){
 
             std::sort(kruskalList.begin(), kruskalList.end(), cmp); // sorting kruskal list
 
@@ -59,7 +59,7 @@ class PBLowerBound{
         }
 
         numType f_i(edgeListType &edges,  maskType visited, maskType chosen, \
-             numType *piParameters, int **costs, int i, UnionFind *ufind){
+             numType *piParameters, int **costs, int i, UnionFindNRB *ufind){
 
             // i and j were seted as in (11) of the paper
 
@@ -118,19 +118,19 @@ class PBLowerBound{
                     numType *piParameters, int **costs, numType *fCosts){
 
             // computing f_i(\pi) costs
+            UnionFindNRB *ufind = new UnionFindNRB(n + 1);
             for(int i = 0; i < m; ++i){
-                UnionFind *ufind = new UnionFind(n + 1);
+                ufind->reset();
                 if(visited[i] && !chosen[i]){
                     fCosts[i] = INF;
                 }else{
                     fCosts[i] = f_i(edges, visited, chosen, piParameters, costs, i, ufind);
                 }
                 // printf("f(%d): %.3lf ", i, fCosts[i]);
-                delete ufind;
             }
             // printf("\n");
 
-            UnionFind *ufind = new UnionFind(n + 1);
+            ufind->reset();
             numType cost = 0; // PB cost
 
             // couting the already chosen edges. at the end, it must be that
@@ -143,6 +143,7 @@ class PBLowerBound{
                     // se to add uma aresta na arvore com a qual n formo arvore alguma
                     if(fCosts[i] == INF){
                         // printf("Adicionando aresta %d com custo de producao inf\n", i);
+                        delete ufind;
                         return INF;
                     }
 
