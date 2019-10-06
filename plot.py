@@ -60,7 +60,6 @@ branchAndBoundEdgeNumbers = [ x[1] for x in branchAndBoundSetPlot ]
 #  print(branchAndBoundTimes)
 
 
-
 plt.plot(backTrackEdgeNumbers, backTrackTimes, 'b.', label='Backtrack')
 plt.plot(branchAndBoundEdgeNumbers, branchAndBoundTimes, 'r.', label='Branch and Bound')
 plt.legend()
@@ -68,4 +67,3 @@ plt.xticks(rotation='vertical')
 plt.title("Backtrack vs. Branch and bound - Time comparison", fontsize='medium')
 
 plt.savefig(sys.argv[1] if len(sys.argv) > 1 else "test.png", dpi=300, bbox_inches='tight')
-
