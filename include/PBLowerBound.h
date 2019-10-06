@@ -7,16 +7,28 @@
 #include "unionFind.h"
 
 #define INF 100000
+#define NBITS 100
+
+#define kruskalListType std::vector<std::pair<double,int>>
+#define edgeListType std::vector<std::pair<int,int>>
+#define maskType std::bitset<NBITS>
+
+bool cmp(std::pair<double,int> &a, std::pair<double,int> &b){
+    if(a.first == b.first){
+        return a.second < b.second;
+    }else return a < b;
+}
 
 class PBLowerBound{
+
+
     private:
         int n, m;
 
-        int kruskal(std::vector<std::pair<int,int>> &kruskalList, \
-                    const std::vector<std::pair<int,int>> &edges, UnionFind *ufind,
-                    int alreadyChosen){
+        int kruskal(kruskalListType &kruskalList, edgeListType &edges, \
+                    UnionFind *ufind, int &alreadyChosen, double &cost){
 
-            sort(kruskalList.begin(), kruskalList.end()); // sorting kruskal list
+            std::sort(kruskalList.begin(), kruskalList.end(), cmp); // sorting kruskal list
 
             int chosenKruskal = 0; // edges chosen by kruskal
             for(int k = 0; k < kruskalList.size(); ++k){
@@ -40,15 +52,14 @@ class PBLowerBound{
 
         }
 
-        int f_i(const std::vector<std::pair<int,int>> &edges, \
-             const std::bitset<NBITS> visited, const std::bitset<NBITS> chosen, \
-             int *piParameters, int **costs, int i, UnionFind *ufind){
+        int f_i(edgeListType &edges,  maskType visited, maskType chosen, \
+             double *piParameters, int **costs, int i, UnionFind *ufind){
 
             // i and j were seted as in (11) of the paper
 
             // setting cost, already initializing with val. b_i(\pi) and using it at
             // union find
-            int cost = costs[i][i] - (n - 2) * piParameters[i];
+            double cost = costs[i][i] - (n - 2) * piParameters[i];
             ufind->join(edges[i].first, edges[i].second);
 
             // couting the already chosen edges. at the end, it must be that
@@ -65,7 +76,7 @@ class PBLowerBound{
             }
 
             // create kruskal vector to be sorted
-            std::vector<std::pair<int,int>> kruskalList;
+            kruskalListType kruskalList;
 
             for(int j = 0; j < m; ++j){
                 // only add edges that werent yet chosen on the bb algorithm
@@ -74,7 +85,7 @@ class PBLowerBound{
                 }
             }
 
-            return kruskal(kruskalList, edges, ufind, alreadyChosen);
+            return kruskal(kruskalList, edges, ufind, alreadyChosen, cost);
         }
 
 
@@ -88,24 +99,22 @@ class PBLowerBound{
 
         }
 
-        std::pair<int,int> pb(const std::vector<std::pair<int,int>> edges, \
-             const std::bitset<NBITS> &visited, const std::bitset<NBITS> &chosen, \
-             int *piParameters, int **costs){
+        std::pair<double,double> pb(edgeListType edges,  maskType &visited, \
+             maskType &chosen,  double *piParameters, int **costs, double *fCosts){
 
-            int maxF = 0, minF = INF;
+            double maxF = 0, minF = INF;
 
             // computing f_i(\pi) costs
-            int fCosts = new int[m];
             for(int i = 0; i < m; ++i){
-                UnionFind ufind = new UnionFind(n + 1);
+                UnionFind *ufind = new UnionFind(n + 1);
                 fCosts[i] = f_i(edges, visited, chosen, piParameters, costs, i, ufind);
-                maxF = max(maxF, fCosts[i]);
-                minF = min(minF, fCosts[i]);
+                maxF = std::max(maxF, fCosts[i]);
+                minF = std::min(minF, fCosts[i]);
                 delete ufind;
             }
 
-            UnionFind ufind = new UnionFind(n + 1);
-            int cost = 0; // PB cost
+            UnionFind *ufind = new UnionFind(n + 1);
+            double cost = 0; // PB cost
 
             // couting the already chosen edges. at the end, it must be that
             // chosen + already = n - 1
@@ -121,16 +130,16 @@ class PBLowerBound{
             }
 
             // create kruskal vector to be sorted
-            std::vector<std::pair<int,int>> kruskalList;
+            kruskalListType kruskalList;
 
-            for(int i = 0; i < m; ++i){
+            for(int j = 0; j < m; ++j){
                 // only add edges that werent yet chosen on the bb algorithm
                 if(!visited[j]){
                     kruskalList.push_back({fCosts[j], j});
                 }
             }
 
-            int ans = kruskal(kruskalList, edges, ufind, alreadyChosen);
+            double ans = kruskal(kruskalList, edges, ufind, alreadyChosen, cost);
             delete ufind;
             return {ans, maxF - minF};
         }

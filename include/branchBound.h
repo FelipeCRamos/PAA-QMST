@@ -7,20 +7,31 @@
 #include <queue>
 
 #include "unionFind.h"
+#include "LPLowerBound.h"
 
+#define INF 100000
 #define NBITS 100
 
+#define edgeListType std::vector<std::pair<int,int>>
+#define maskType std::bitset<NBITS>
 
 struct State{
-    int nextEdge;
-    int lowerBound;
-    std::bitset<NBITS> visited, chosen;
+    int nextEdge, cost;
+    double lowerBound;
+    maskType visited, chosen, nodes;
 
-    State(int ne, int lb, std::bitset<NBITS> v, std::bitset<NBITS> chos){
+    State(int ne, int c, maskType v, maskType chos, maskType nod){
         nextEdge = ne;
-        lowerBound = lb;
+        cost = c;
         chosen = chos;
         visited = v;
+        nodes = nod;
+    }
+
+    void computeLB(int n, int m, edgeListType &edges, int **costs){
+        LPLowerBound lb(n, m);
+
+        lowerBound = lb.levelingProcedure(edges, visited, chosen, costs);
     }
 };
 
@@ -28,28 +39,37 @@ bool operator <(const State & a, const State & b){
     // melhor o no aquele que tem menor lower bound
     // em caso de empate, pego o no com mais vertices visitados
     // em caso de empate, pego o que tem a proxima aresta a ser proc com maior id
-    if(a.lb == b.lb){
+    if(a.lowerBound == b.lowerBound){
         if(a.visited.count() == b.visited.count()) return a.nextEdge > b.nextEdge;
         return a.visited.count() > b.visited.count();
     }
-    return a.lb < b.lb;
+    return a.lowerBound < b.lowerBound;
 }
 
 class BBoundAlgorithm{
 private:
-    const int INF = 1000000; // valor infinito para
     int **_costs; // matriz de custos
-    std::vector<std::pair<int,int>> _edges; // lista com todas as arestas
+    edgeListType _edges; // lista com todas as arestas
     int _m, _n; // qntd de arestas e de nos
+
+    void prepareUFind(State & state, UnionFindNRB *ufind){
+        for(int i = 0; i < _m; ++i){
+            if(state.visited[i] && state.chosen[i]){
+                int v = _edges[i].first; // vertice numa extremidade
+                int u = _edges[i].second; // vertice noutra extremidade
+                ufind->join(u, v);
+            }
+        }
+    }
 
 
     int _bbound(){
         int upper_bound = INF;
-        std::priority_queue<std::pair<int, State > > pq;
+        std::priority_queue<State> pq;
 
-        State initalState = State(0, 0, std::bitmask<NBITS>());
-
-        pq.push({0, initalState});
+        State initalState = State(0, 0, maskType(), maskType(), maskType());
+        initalState.computeLB(_n, _m, _edges, _costs);
+        pq.push(initalState);
 
         while(!pq.empty()){
             State currentState = pq.top(); // recuperando estado atual
@@ -59,65 +79,73 @@ private:
             if(currentState.cost > upper_bound) continue;
 
             // se formei uma arvore, atualizo o upper bound se obtive melhor result
-            if(currentState.mask.count() == _n - 1)
-                upper_bound = min(upper_bound, currentState.cost);
+            if(currentState.nodes.count() == _n - 1)
+                upper_bound = std::min(upper_bound, currentState.cost);
 
             // se nao tenho mais quem botar e nao completei arvore, cheguei num dead end
-            if(currentState.nextEdge == m) continue;
+            if(currentState.nextEdge == _m) continue;
 
             // _m - currentState.nextEdge: quantos arestas consigo por no max
             // _n - 1 - currentState.mask.count(): quantos arestas ainda preciso
-            if(_m - currentState.nextEdge < _n - 1 - currentState.mask.count()) return INF;
+            if(_m - currentState.nextEdge < _n - 1 - currentState.nodes.count()) return INF;
 
+            // setting union find for checking for cycles
+            UnionFindNRB *ufind = new UnionFindNRB(_n+1);
+            prepareUFind(currentState, ufind);
 
+            // retrieving vertices of edge
             int v = _edges[currentState.nextEdge].first; // vertice numa extremidade
             int u = _edges[currentState.nextEdge].second; // vertice noutra extremidade
 
-            pq.push({0, State(0,0, currentState.mask)}); // TODO
+            // setting state of not adding the current edge
+            State stateNotAddingEdge = State(currentState.nextEdge + 1, currentState.cost, currentState.visited, \
+                                            currentState.chosen, currentState.nodes);
+            stateNotAddingEdge.visited[currentState.nextEdge] = 1; // visited the current edge
+            stateNotAddingEdge.chosen[currentState.nextEdge] = 0; // did not add it to the tree
+            stateNotAddingEdge.computeLB(_n, _m, _edges, _costs); // computing lower bound for the state
+
+            pq.push(stateNotAddingEdge); // adding it to the queues
 
             if(ufind->find(u) != ufind->find(v)){ // posso adicionar sem criar ciclos?
+
+                // computing costs for state adding current edge
                 int lin_cost = _costs[currentState.nextEdge][currentState.nextEdge]; // custo linear
-
                 int quad_costs = 0; // custo quadratico
-                for( auto p : placed ) quad_costs += _costs[p][currentState.nextEdge] * 2;
+                for(int i = 0; i < _m; ++i){
+                    if(currentState.visited[i] && currentState.chosen[i])
+                        quad_costs += _costs[i][currentState.nextEdge] * 2;
+                }
 
-                currentState.mask.set(currentState.nextEdge); // ativando aresta atual na bitmask
+                // setting state of adding the current edge
+                State stateAddingEdge = State(currentState.nextEdge + 1, currentState.cost + lin_cost + quad_costs, \
+                                              currentState.visited, currentState.chosen, \
+                                              currentState.nodes);
 
-                ufind->join(v, u); // ERRADO
+                stateAddingEdge.visited[currentState.nextEdge] = 1; // visited the current edge
+                stateAddingEdge.chosen[currentState.nextEdge] = 1; // added it to the tree
+                stateAddingEdge.nodes[u] = 1;
+                stateAddingEdge.nodes[v] = 1;
+                stateAddingEdge.computeLB(_n, _m, _edges, _costs); // computing lower bound for the state
 
-                // ponha o estado gerado na fila
-                pq.push({0, State(0, 0, currentState.mask)}); // TODO
+                pq.push(stateAddingEdge); // adding it to the queue
             }
 
-            ans = std::min(ans, _backtrack(i + 1, cost));
-
-
+            delete ufind; // del ufind pointer
         }
 
         return upper_bound;
     }
 
 public:
-    BBoundAlgorithm(int n, int m, std::vector<std::pair<int,int>> &edges, int **costs){
+    BBoundAlgorithm(int n, int m, edgeListType &edges, int **costs){
         _edges = edges;
         _n = n;
         _m = m;
 
-        _costs = new int*[_m];
-        for(int i = 0; i < _m; ++i) _costs[i] = new int[_m];
-
-        for(int i = 0; i < _m; ++i)
-            for(int j = 0; j < _m; ++j)
-                _costs[i][j] = costs[i][j];
-
-        ufind = new UnionFind(n+1);
+        _costs = costs;
     }
 
-    ~BBoundAlgorithm(){
-        for(int i = 0; i < _m; ++i) delete[] _costs[i];
-        delete[] _costs;
-        delete ufind;
-    }
+    ~BBoundAlgorithm(){}
 
     int bbound(){
         return _bbound();
