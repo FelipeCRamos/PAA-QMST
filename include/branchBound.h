@@ -73,6 +73,7 @@ class BBoundAlgorithm{
             pq.push(initalState);
 
 
+            UnionFindNRB *ufind = new UnionFindNRB(_n+1);
             while(!pq.empty()){
                 counter++;
                 State currentState = pq.top(); // recuperando estado atual
@@ -95,7 +96,7 @@ class BBoundAlgorithm{
                 if(_m - currentState.nextEdge < _n - 1 - currentState.alreadyChosen) return INF;
 
                 // setting union find for checking for cycles
-                UnionFindNRB *ufind = new UnionFindNRB(_n+1);
+                ufind->reset();
                 prepareUFind(currentState, ufind);
 
                 // retrieving vertices of edge
@@ -138,9 +139,9 @@ class BBoundAlgorithm{
                         pq.push(stateAddingEdge); // adding it to the queues
                 }
 
-                delete ufind; // del ufind pointer
             }
 
+            delete ufind; // del ufind pointer
             return upper_bound;
         }
 
