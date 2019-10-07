@@ -116,7 +116,7 @@ class BBoundAlgorithm{
                 stateNotAddingEdge.chosen[currentState.nextEdge] = 0; // did not add it to the tree
                 stateNotAddingEdge.computeLB(_n, _m, _edges, _costs, piParameters, fCosts, pblb); // computing lower bound for the state
 
-                if(stateNotAddingEdge.lowerBound != INF)
+                if(stateNotAddingEdge.lowerBound != INF && stateNotAddingEdge.lowerBound < upper_bound)
                     pq.push(stateNotAddingEdge); // adding it to the queues
 
                 if(ufind->find(u) != ufind->find(v)){ // posso adicionar sem criar ciclos?

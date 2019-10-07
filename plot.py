@@ -61,8 +61,8 @@ infos_bb = getInfos('log.txt')
         #  infos[filename] = dicEntry
         #  print(filename, infos[filename])
 
-backtrackSetPlot = [ (int(infos[file]['time']), file) for file in infos ]
-branchAndBoundSetPlot = [ (int(infos_bb[file]['time']), file) for file in infos_bb ]
+backtrackSetPlot = [ (int(infos[file]['calls']), file) for file in infos ]
+branchAndBoundSetPlot = [ (int(infos_bb[file]['calls']), file) for file in infos_bb ]
 
 #  print(sorted(backtrackSetPlot, key=lambda x: x[1]))
 
@@ -79,7 +79,7 @@ plt.plot(backTrackEdgeNumbers, backTrackTimes, 'b.', label='Backtrack', alpha=0.
 plt.plot(branchAndBoundEdgeNumbers, branchAndBoundTimes, 'r.', label='Branch and Bound', alpha=0.5)
 plt.legend()
 plt.xticks(rotation='vertical')
-plt.title("Backtrack vs. Branch and bound - Comparação de tempo (em ms)", fontsize='medium')
+plt.title("Backtrack vs. Branch and bound - Comparação de chamadas", fontsize='medium')
 
-plt.savefig(sys.argv[1] if len(sys.argv) > 1 else "graph.png", dpi=300, bbox_inches='tight')
+plt.savefig(sys.argv[1] if len(sys.argv) > 1 else "graph-calls.png", dpi=300, bbox_inches='tight')
 print("Figure saved! Bye")
