@@ -13,27 +13,27 @@
 
 class LPLowerBound{
     private:
+        numType delta;
+        int n, m;
         numType *piParameters;
         numType *fCosts;
-        numType delta;
         PBLowerBound* pblb;
-        int n, m;
 
     public:
 
-        LPLowerBound(int _n, int _m, numType _delta = 30){
+        LPLowerBound(int _n, int _m, numType *_piParameters, numType *_fCosts, \
+                    PBLowerBound *_pblb, numType _delta = 30){
+
+            piParameters = _piParameters;
+            pblb = _pblb;
+            fCosts = _fCosts;
+
             n = _n, m = _m;
-            pblb = new PBLowerBound(n, m);
-            piParameters = new numType[m];
-            fCosts = new numType[m];
             for(int i = 0; i < m; ++i) piParameters[i] = 0;
             delta = _delta;
         }
 
         ~LPLowerBound(){
-            delete[] piParameters;
-            delete pblb;
-            delete fCosts;
         }
 
         numType levelingProcedure(edgeListType edges, maskType &visited, maskType &chosen, \
