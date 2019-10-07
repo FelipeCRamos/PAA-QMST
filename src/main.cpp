@@ -59,7 +59,7 @@ int main(int argc, char **argv){
     // PARSING FEITO, GRAFO MONTADO
     // ------------------------------------------------------------------------
 
-    
+
     BBoundAlgorithm bb(n, m, edges, costs);
 
     auto bbStartTime = std::chrono::high_resolution_clock::now();
@@ -68,11 +68,10 @@ int main(int argc, char **argv){
     auto bbElapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(bbEndTime - bbStartTime);
 
     std::cout << "\nBranch and bound run stats: ";
-    std::cout << n << ";" << m << ";";
+    std::cout << "n: " << n << "; m: " << m << "; solution: ";
     std::cout << result << ";";
-
-    std::cout << "" << bbElapsedTime.count() << ";";
-    std::cout << "" << bb.steps() << std::endl;
+    std::cout << "time (ms): " << bbElapsedTime.count() << ";";
+    std::cout << "visited states: " << bb.steps() << std::endl << std::endl;
 
     BacktrackAlgorithm b(n, m, edges, costs);
 
@@ -82,10 +81,10 @@ int main(int argc, char **argv){
     auto btElapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(btEndTime - btStartTime);
 
     std::cout << "Backtrack run stats: ";
-    std::cout << n << ";" << m << ";";
+    std::cout << "n: " << n << "; m: " << m << "; solution: ";
     std::cout << result << ";";
-    std::cout << "" << btElapsedTime.count() << ";";
-    std::cout << "" << b.steps() << std::endl << std::endl;
+    std::cout << "time (ms): " << btElapsedTime.count() << ";";
+    std::cout << "visited states: " << b.steps() << std::endl << std::endl;
 
     return 0;
 }
