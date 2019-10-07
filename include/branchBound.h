@@ -135,7 +135,7 @@ class BBoundAlgorithm{
 
 
                     // printf("%d %d %d\n", currentState.nextEdge, stateAddingEdge.lowerBound, upper_bound );
-                    if(stateAddingEdge.lowerBound != INF || stateAddingEdge.lowerBound > upper_bound)
+                    if(stateAddingEdge.lowerBound != INF && stateAddingEdge.lowerBound < upper_bound)
                         pq.push(stateAddingEdge); // adding it to the queues
                 }
 

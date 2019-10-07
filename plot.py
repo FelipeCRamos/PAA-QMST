@@ -7,7 +7,7 @@ import os
 import sys
 import threading
 
-makeTests = True
+makeTests = False
 
 def isSmallerThan(string):
     try:
@@ -24,6 +24,20 @@ def autolabel(rects):
                     textcoords="offset points",
                     ha='center', va='bottom')
 
+def getInfos(filename):
+    infos = dict()
+    with open(filename, 'r') as logFile:
+        logFile = logFile.read().split('\n')
+        for filename, logEntry in zip(file_list, logFile):
+            entry = logEntry.split(';')
+            dicEntry = dict()
+            for name, arg in zip(['nodes', 'edge', 'result', 'time', 'calls'], entry):
+                dicEntry[name] = arg
+            infos[filename] = dicEntry
+            #  print(filename, infos[filename])
+    return infos
+
+
 
 file_list = sorted([str(filename) for filename in os.listdir("tests/10-30/") if isSmallerThan(filename)])
 
@@ -35,21 +49,22 @@ for file in file_list:
         print("Sending test to the file: {}...".format(file))
         os.system(command)
 
-infos = dict()
-with open('log.txt', 'r') as logFile:
-    logFile = logFile.read().split('\n')
-    for filename, logEntry in zip(file_list, logFile):
-        entry = logEntry.split(';')
-        dicEntry = dict()
-        for name, arg in zip(['nodes', 'edge', 'result', 'time', 'calls'], entry):
-            dicEntry[name] = arg
-        infos[filename] = dicEntry
-        print(filename, infos[filename])
+infos = getInfos('log-backtrack.txt')
+infos_bb = getInfos('log.txt')
+#  with open('log.txt', 'r') as logFile:
+    #  logFile = logFile.read().split('\n')
+    #  for filename, logEntry in zip(file_list, logFile):
+        #  entry = logEntry.split(';')
+        #  dicEntry = dict()
+        #  for name, arg in zip(['nodes', 'edge', 'result', 'time', 'calls'], entry):
+            #  dicEntry[name] = arg
+        #  infos[filename] = dicEntry
+        #  print(filename, infos[filename])
 
 backtrackSetPlot = [ (int(infos[file]['time']), file) for file in infos ]
-branchAndBoundSetPlot = [ (int(infos[file]['time']) + 40000, file) for file in infos ]
+branchAndBoundSetPlot = [ (int(infos_bb[file]['time']), file) for file in infos_bb ]
 
-print(sorted(backtrackSetPlot, key=lambda x: x[1]))
+#  print(sorted(backtrackSetPlot, key=lambda x: x[1]))
 
 backTrackTimes = [ x[0] for x in backtrackSetPlot ]
 backTrackEdgeNumbers = [ x[1] for x in backtrackSetPlot ]
@@ -60,11 +75,11 @@ branchAndBoundEdgeNumbers = [ x[1] for x in branchAndBoundSetPlot ]
 #  print(backTrackTimes)
 #  print(branchAndBoundTimes)
 
-plt.plot(backTrackEdgeNumbers, backTrackTimes, 'b.', label='Backtrack')
-plt.plot(branchAndBoundEdgeNumbers, branchAndBoundTimes, 'r.', label='Branch and Bound')
+plt.plot(backTrackEdgeNumbers, backTrackTimes, 'b.', label='Backtrack', alpha=0.5)
+plt.plot(branchAndBoundEdgeNumbers, branchAndBoundTimes, 'r.', label='Branch and Bound', alpha=0.5)
 plt.legend()
 plt.xticks(rotation='vertical')
-plt.title("Backtrack vs. Branch and bound - Time comparison", fontsize='medium')
+plt.title("Backtrack vs. Branch and bound - Comparação de tempo (em ms)", fontsize='medium')
 
-plt.savefig(sys.argv[1] if len(sys.argv) > 1 else "test.png", dpi=300, bbox_inches='tight')
+plt.savefig(sys.argv[1] if len(sys.argv) > 1 else "graph.png", dpi=300, bbox_inches='tight')
 print("Figure saved! Bye")
