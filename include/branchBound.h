@@ -164,7 +164,11 @@ class BBoundAlgorithm{
             _costs = costs;
         }
 
-        ~BBoundAlgorithm(){}
+        ~BBoundAlgorithm(){
+            delete pblb;
+            delete[] fCosts;
+            delete[] piParameters;
+        }
 
         int bbound(){
             return _bbound();
