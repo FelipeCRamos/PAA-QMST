@@ -7,7 +7,7 @@ import os
 import sys
 import threading
 
-makeTests = False
+makeTests = True
 
 def isSmallerThan(string):
     try:
@@ -44,10 +44,14 @@ file_list = sorted([str(filename) for filename in os.listdir("tests/10-30/") if 
 # Make tests
 command_list = list()
 for file in file_list:
-    command = "./agmq tests/10-30/{} >> log-bb.txt".format(file)
+    command = "./agmq tests/10-30/{}".format(file)
     if makeTests:
         print("Sending test to the file: {}...".format(file))
         os.system(command)
+
+# -----------------------------------------------------------------------------------
+# interpretaćão de informacoes
+exit() # desativada
 
 infos = getInfos('log-backtrack.txt')
 infos_bb = getInfos('log-bb.txt')

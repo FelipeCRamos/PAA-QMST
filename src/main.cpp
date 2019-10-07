@@ -59,10 +59,25 @@ int main(int argc, char **argv){
     // PARSING FEITO, GRAFO MONTADO
     // ------------------------------------------------------------------------
 
+    
+    BBoundAlgorithm bb(n, m, edges, costs);
+
+    auto bbStartTime = std::chrono::high_resolution_clock::now();
+    auto result = bb.bbound();
+    auto bbEndTime = std::chrono::high_resolution_clock::now();
+    auto bbElapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(bbEndTime - bbStartTime);
+
+    std::cout << "\nBranch and bound run stats: ";
+    std::cout << n << ";" << m << ";";
+    std::cout << result << ";";
+
+    std::cout << "" << bbElapsedTime.count() << ";";
+    std::cout << "" << bb.steps() << std::endl;
+
     BacktrackAlgorithm b(n, m, edges, costs);
 
     auto btStartTime = std::chrono::high_resolution_clock::now();
-    auto result = b.backtrack();
+    result = b.backtrack();
     auto btEndTime = std::chrono::high_resolution_clock::now();
     auto btElapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(btEndTime - btStartTime);
 
@@ -70,21 +85,7 @@ int main(int argc, char **argv){
     std::cout << n << ";" << m << ";";
     std::cout << result << ";";
     std::cout << "" << btElapsedTime.count() << ";";
-    std::cout << "" << b.steps() << std::endl;
-
-    BBoundAlgorithm bb(n, m, edges, costs);
-
-    auto bbStartTime = std::chrono::high_resolution_clock::now();
-    result = bb.bbound();
-    auto bbEndTime = std::chrono::high_resolution_clock::now();
-    auto bbElapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(bbEndTime - bbStartTime);
-
-    std::cout << "Branch and bound run stats: ";
-    std::cout << n << ";" << m << ";";
-    std::cout << result << ";";
-
-    std::cout << "" << bbElapsedTime.count() << ";";
-    std::cout << "" << bb.steps() << std::endl;
+    std::cout << "" << b.steps() << std::endl << std::endl;
 
     return 0;
 }
