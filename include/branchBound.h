@@ -8,6 +8,7 @@
 
 #include "unionFind.h"
 #include "LPLowerBound.h"
+#include "PBLowerBound.h"
 
 #include "defines.h"
 
@@ -28,8 +29,10 @@ struct State{
         visited = v;
     }
 
-    void computeLB(int n, int m, edgeListType &edges, int **costs){
-        LPLowerBound lb(n, m);
+    void computeLB(int n, int m, edgeListType &edges, int **costs, numType *piParameters, \
+                        numType *fCosts, PBLowerBound *pblb){
+
+        LPLowerBound lb(n, m, piParameters, fCosts, pblb);
 
         lowerBound = lb.levelingProcedure(edges, visited, chosen, costs);
     }
@@ -52,6 +55,9 @@ class BBoundAlgorithm{
         edgeListType _edges; // lista com todas as arestas
         int _m, _n; // qntd de arestas e de nos
         long int counter = 0;
+        numType *piParameters;
+        numType *fCosts;
+        PBLowerBound* pblb;
 
         void prepareUFind(State & state, UnionFindNRB *ufind){
             for(int i = 0; i < _m; ++i){
@@ -69,7 +75,7 @@ class BBoundAlgorithm{
             std::priority_queue<State> pq;
 
             State initalState = State(0, 0, maskType(), maskType(), 0);
-            initalState.computeLB(_n, _m, _edges, _costs);
+            initalState.computeLB(_n, _m, _edges, _costs, piParameters, fCosts, pblb);
             pq.push(initalState);
 
 
@@ -108,7 +114,7 @@ class BBoundAlgorithm{
                         currentState.chosen, currentState.alreadyChosen);
                 stateNotAddingEdge.visited[currentState.nextEdge] = 1; // visited the current edge
                 stateNotAddingEdge.chosen[currentState.nextEdge] = 0; // did not add it to the tree
-                stateNotAddingEdge.computeLB(_n, _m, _edges, _costs); // computing lower bound for the state
+                stateNotAddingEdge.computeLB(_n, _m, _edges, _costs, piParameters, fCosts, pblb); // computing lower bound for the state
 
                 if(stateNotAddingEdge.lowerBound != INF)
                     pq.push(stateNotAddingEdge); // adding it to the queues
@@ -131,7 +137,7 @@ class BBoundAlgorithm{
                     stateAddingEdge.visited[currentState.nextEdge] = 1; // visited the current edge
                     stateAddingEdge.alreadyChosen++; // visited the current edge
                     stateAddingEdge.chosen[currentState.nextEdge] = 1; // added it to the tree
-                    stateAddingEdge.computeLB(_n, _m, _edges, _costs); // computing lower bound for the state
+                    stateAddingEdge.computeLB(_n, _m, _edges, _costs, piParameters, fCosts, pblb); // computing lower bound for the state
 
 
                     // printf("%d %d %d\n", currentState.nextEdge, stateAddingEdge.lowerBound, upper_bound );
@@ -150,6 +156,10 @@ class BBoundAlgorithm{
             _edges = edges;
             _n = n;
             _m = m;
+
+            pblb = new PBLowerBound(n, m);
+            piParameters = new numType[m];
+            fCosts = new numType[m];
 
             _costs = costs;
         }
