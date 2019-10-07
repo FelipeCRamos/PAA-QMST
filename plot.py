@@ -44,13 +44,13 @@ file_list = sorted([str(filename) for filename in os.listdir("tests/10-30/") if 
 # Make tests
 command_list = list()
 for file in file_list:
-    command = "./agmq tests/10-30/{} >> log.txt".format(file)
+    command = "./agmq tests/10-30/{} >> log-bb.txt".format(file)
     if makeTests:
         print("Sending test to the file: {}...".format(file))
         os.system(command)
 
 infos = getInfos('log-backtrack.txt')
-infos_bb = getInfos('log.txt')
+infos_bb = getInfos('log-bb.txt')
 #  with open('log.txt', 'r') as logFile:
     #  logFile = logFile.read().split('\n')
     #  for filename, logEntry in zip(file_list, logFile):

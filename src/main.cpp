@@ -47,7 +47,6 @@ int main(int argc, char **argv){
 
     if(debug) std::cout << PTAG << "Parsing do arquivo feita com sucesso!" << std::endl;
 
-
     // recuperando parametros dos arquivos
     int n = parser.getN();
     int m = parser.getM();
@@ -60,37 +59,32 @@ int main(int argc, char **argv){
     // PARSING FEITO, GRAFO MONTADO
     // ------------------------------------------------------------------------
 
-    // BacktrackAlgorithm b(n, m, edges, costs);
+    BacktrackAlgorithm b(n, m, edges, costs);
 
-    // auto btStartTime = std::chrono::high_resolution_clock::now();
+    auto btStartTime = std::chrono::high_resolution_clock::now();
+    auto result = b.backtrack();
+    auto btEndTime = std::chrono::high_resolution_clock::now();
+    auto btElapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(btEndTime - btStartTime);
 
-    // auto result = b.backtrack();
-    // std::cout << n << ";" << m << ";";
-    // std::cout << result << ";";
-
-    // auto btEndTime = std::chrono::high_resolution_clock::now();
-    // auto btElapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(btEndTime - btStartTime);
-
-    // std::cout << "" << btElapsedTime.count() << ";";
-    // std::cout << "" << b.steps() << std::endl;
-    // BacktrackAlgorithm b(n, m, edges, costs);
-    // std::cout << b.backtrack() << std::endl;
+    std::cout << "Backtrack run stats: ";
+    std::cout << n << ";" << m << ";";
+    std::cout << result << ";";
+    std::cout << "" << btElapsedTime.count() << ";";
+    std::cout << "" << b.steps() << std::endl;
 
     BBoundAlgorithm bb(n, m, edges, costs);
 
-    // auto result = b.backtrack();
-
     auto bbStartTime = std::chrono::high_resolution_clock::now();
-    auto result =  bb.bbound();
+    result = bb.bbound();
     auto bbEndTime = std::chrono::high_resolution_clock::now();
     auto bbElapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(bbEndTime - bbStartTime);
 
+    std::cout << "Branch and bound run stats: ";
     std::cout << n << ";" << m << ";";
     std::cout << result << ";";
 
     std::cout << "" << bbElapsedTime.count() << ";";
     std::cout << "" << bb.steps() << std::endl;
-    // std::cout << "result: " << result << std::endl;
 
     return 0;
 }
