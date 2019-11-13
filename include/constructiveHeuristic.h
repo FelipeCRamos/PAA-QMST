@@ -8,8 +8,13 @@ class ConstructiveHeuristic{
 
     ConstructiveHeuristic(){}
 
-    void construct(Forest &forest){
-
+    void construct(Forest &forest, vector<Edge> &edges){
+        // listar todas as arestas que nao estao na arvore
+        // enquanto nao formou solucao
+            // ponderar pelo inverso do custo medio
+            // fazer skewing
+            // escolher aleatoriamente aresta
+        // fim
     }
 
 
