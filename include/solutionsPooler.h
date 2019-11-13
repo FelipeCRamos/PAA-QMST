@@ -20,50 +20,20 @@ class SolutionsPooler{
             }
         }
 
-        int choose(vector<pair<double, iterType>> &v){
-            double flip = ((double) rand() / (RAND_MAX)) + 1;
-
-            double acc = 0;
-            for(int i = 0; i < probs.size(); ++i){
-                if(acc + probs[i] >= flip) return i;
-                acc += probs[i];
-            }
-
-            return probs.size() - 1;
-        }
-
-        void prepareProbs(vector<pair<double, iterType>> &probs){
-            double totInverseCost = 0;
+        Forest getSolution(){
+            vector<double> probs;
+            vector<iterType> iters;
 
             for(iterType it = forestSet.begin(); it != forestSet.end(); ++it){
-                probs.append(make_pair(1/it->cost, it));
-                totInverseCost += 1/it->cost;
+                probs.append(1/it->cost);
+                iters.append(it);
             }
 
-            for(int i = 0; i < probs.size(); ++i){
-                probs[i].first /= totInverseCost;
-            }
-        }
+            RandomPoll rpoll(probs, skewValue);
+            rpoll.prepareProbs();
+            int chosenIndex = rpoll.poll();
 
-        void skewProbs(vector<pair<double, iterType>> &probs){
-            double tot = 0;
-            for(int i = 0; i < probs.size(); ++i){
-                probs[i].first = powf(probs[i].first, skewValue);
-                tot += probs[i].first;
-            }
-
-            for(int i = 0; i < probs.size(); ++i){
-                probs[i].first /= tot;
-            }
-        }
-
-        Forest getSolution(){
-            vector<pair<double, iterType>> probs;
-            prepareProbs(probs);
-            skewProbs(probs);
-            int chosenIndex = choose(probs);
-
-            return *probs[chosenIndex].second;
+            return *iters[chosenIndex];
         }
 }
 

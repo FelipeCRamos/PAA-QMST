@@ -10,11 +10,14 @@ class DestructiveHeuristic{
 
     void desctruct(Forest &forest, int numRemovals){
         // recuperar todas as arestas que estao na arvore
-        // enquanto nao removeu numRemovals
+        while(numRemovals--){
             // por arestas recuperadas numa lista, ponderadas pelo custo medio
-            // fazer skewing
-            // escolher aleatoriamente qual tirar, mas ponderando
-        // fim
+            // nao preciso refazer o vetor, eh so por valor = 0 de quem ja saiu
+            RandomPoll rp(???????????????????);
+            rp.prepareProbs();
+            int chosenIndex = rp.poll();
+            forest.removeEdge(????????[chosenIndex]);
+        }
     }
 
 };
