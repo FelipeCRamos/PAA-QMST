@@ -11,8 +11,6 @@
 
 
 
-A. função heurística de construção
-B. função heurística de destrução
 K. qntd das melhores configurações que serão salvas
 H. qntd das melhores soluções achadas que serão salvas para escolha
 L. elevar valores a esse fator
@@ -28,7 +26,63 @@ X. quantidade de passos para cada iteração
     2.2. das soluções salvas, extraia as H primeiras
     2.3. calcule o somatório das H primeiras soluções, e defina uma função de probabilidade em função da contribuição da solução a esse somatório (elevado a um fator L)
     2.4. visite a solução escolhida aleatoriamente, volte para (2)
-3. escolha uma das top K arestas, onde a função de probabilidade é definida em função da contribuição da solução ao somatório (elevado a um fator L)
+3. escolha uma das top K arvores, onde a função de probabilidade é definida em função da contribuição da solução ao somatório (elevado a um fator L)
 4. faz SO nela, retirando rand() arestas
 5. volta pra (1)
 */
+
+
+class TabuSearch{
+    ConstructiveHeuristic constructiveHeuristic;
+    DestructiveHeuristic destructiveHeuristic;
+    SolutionsPoller solutionsPoller;
+    int limit;
+    int noUpdtCount;
+    int totLoops;
+    double skewFactorEdges;
+
+    TabuSearch(){
+        noUpdtCount = 0;
+        limit = ?;
+        totLoops = ?;
+    }
+
+    void run(){
+        Forest forest;
+        constructiveHeuristic.construct(forest);
+
+        for(int loopNum = 0; loopNum < totLoops; ++loopNum){
+            noUpdtCount = 0;
+            while(noUpdtCount < limit){
+                solutionsPoller.addSolution(forest);
+                vector<pair<int,int>> neighbourhood;
+                vector<int> neighbourhoodCosts;
+                pair<int,int> bestNeighboard;
+                pair<int, int> nextNeighboard;
+                forest.getNeighbourhood(neighbourhood, neighbourhoodCosts, bestNeighboard);
+
+                if(){ // troca de best neighbourd eh melhor q melhor global
+                    nextNeighboard = bestNeighboard;
+                }else{
+                    for(int i = 0; i < neighbourhood.size(); ++i){
+                        // se for tabu, bota que o custo eh zero
+                    }
+
+                    RandomPoll rp(neighbourhoodCosts, skewFactorEdges);
+                    rp.prepareProbs();
+                    int chosenIndex = rp.poll();
+                    nextNeighboard = neighbourhood[chosenIndex];
+                }
+                
+                forest.goToNeighbour(addedEdge);
+                updateTabu();
+            }
+            forest = solutionsPoller.getSolution();
+
+            int remEdges = rand() % M;
+            destructiveHeuristic.destruct(forest, remEdges);
+            constructiveHeuristic.construct(forest);
+        }
+    }
+
+}

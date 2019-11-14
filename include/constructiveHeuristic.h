@@ -3,12 +3,23 @@
 
 #include "edge.h"
 #include "forest.h"
+#include "unionFind.h"
 
 class ConstructiveHeuristic{
+private:
+    void build(Forest &forest, UnionFind &uf){
+        // para cada aresta em forest
+            // faz a ligacao do union find
+    }
+
+public:
 
     ConstructiveHeuristic(){}
 
     void construct(Forest &forest, vector<Edge> &edges){
+        UnionFind uf;
+        // build do union find
+
         // listar todas as arestas que nao estao na arvore
 
         while(!forest.isSolution()){

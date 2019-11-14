@@ -1,7 +1,7 @@
 #ifndef _POOLER_H_
 #define _POOLER_H_
 
-class SolutionsPooler{
+class SolutionsPoller{
     typedef iterType set<Forest>::iterator;
 
     private:

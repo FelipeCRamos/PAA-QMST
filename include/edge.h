@@ -19,6 +19,7 @@ class Edge{
     bool operator==(const Edge& e) const {
         return u == e.u && v == e.v;
     }
+    
 };
 
 #endif
