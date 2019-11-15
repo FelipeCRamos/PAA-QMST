@@ -63,17 +63,13 @@ class TabuSearch{
                 pair<int, int> nextNeighboard;
                 forest.getNeighbourhood(neighbourhood, neighbourhoodCosts, bestNeighboard);
 
+
                 if(){ // troca de best neighbourd eh melhor q melhor global
                     nextNeighboard = bestNeighboard;
                 }else{
-                    for(int i = 0; i < neighbourhood.size(); ++i){
-                        // selecionar os bestNeighbours melhores vizinhos
-                    }
-
-                    RandomPoll rp(neighbourhoodCosts, skewFactorEdges);
-                    rp.prepareProbs();
-                    int chosenIndex = rp.poll();
-                    nextNeighboard = neighbourhood[chosenIndex];
+                    Poller<...> neighborsPoller(K);
+                    neighborsPoller.addFromVector(neighborhood);
+                    nextNeighboard = neighborsPoller.get();
                 }
 
                 forest.goToNeighbour(nextNeighboard);
@@ -88,7 +84,7 @@ class TabuSearch{
     }
 
     void updateTabu(){
-        
+
     }
 
     void maybeUpdtBest(Forest *forest){
