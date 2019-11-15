@@ -2,6 +2,9 @@
 #define _FOREST_H_
 
 #include "edge.h"
+#include <vector>
+#include <utility>
+#include <algorithm>
 
 class Forest{
     private:
@@ -10,10 +13,10 @@ class Forest{
             // TODO
         }
 
-        static vector<Edge> avaibleEdges;
+        static std::vector<Edge> avaibleEdges;
 
-        vector<int> edgeList;
-        vector<int> costs; // vetor d
+        std::vector<int> edgeList;
+        std::vector<int> costs; // vetor d
         int numNodes;
         int cost;
         int currentRoot;
@@ -35,11 +38,11 @@ class Forest{
             }
         }
 
-        void getNeighbourhood(vector<pair<int,int>> &neighbourhood, vector<int> &neighbourhoodCosts){
+        void getNeighbourhood(std::vector<std::pair<int,int>> &neighbourhood, std::vector<int> &neighbourhoodCosts){
 
         }
 
-        void goToNeighbour(pair<int,int> n){
+        void goToNeighbour(std::pair<int,int> n){
 
         }
 

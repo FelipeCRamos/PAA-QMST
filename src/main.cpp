@@ -15,9 +15,12 @@
 #include "fileParser.h"
 #include "backtrack.h"
 #include "branchBound.h"
+#include "pathRelinking.h"
 
 #define PTAG "[AGMQ] "
 #define debug true
+
+// typedef std::pair<int, int> treeEdge;
 
 int main(int argc, char **argv){
 
@@ -51,7 +54,13 @@ int main(int argc, char **argv){
     int n = parser.getN();
     int m = parser.getM();
     int **costs = parser.getCosts(); // Discutir com felipe
-    std::vector<std::pair<int,int>> edges = parser.getEdges();
+    // m*m
+    //
+    // [ a00, a01, 0, 0 ]
+    // [ 0, a11, 0, 0 ]
+    // [ 0, 0, a22, 0 ]
+    // [ 0, 0, 0, a33 ]
+    std::vector<std::pair<int, int>> edges = parser.getEdges();
 
     // ------------------------------------------------------------------------
     // PARSING FEITO, GRAFO MONTADO
@@ -97,6 +106,15 @@ int main(int argc, char **argv){
         std::cout << "\tNodes: " << n << std::endl;
         std::cout << "\tEdges: " << m << std::endl;
         std::cout << "\tCosts: " << std::endl;
+        for( int aresta = 0; aresta < m; aresta++ ) {
+            for( int outraAresta = 0; outraAresta < m; outraAresta++ ) {
+                printf("Aresta [%i][%i] = %i\n", aresta, outraAresta, costs[aresta][outraAresta]);
+            }
+        }
+
+        ParticleSwarm::Tree one = ParticleSwarm::Tree(n, m, costs, edges);
+
+        // ParticleSwarm::PathRelinking(one, two);
     }
 
     return 0;

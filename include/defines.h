@@ -3,5 +3,6 @@
 
 #define NBITS 120
 #define INF 100000
+typedef std::pair<int, int> treeEdge;
 
 #endif
