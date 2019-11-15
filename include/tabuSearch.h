@@ -1,15 +1,4 @@
 /*
-- vizinhança
-    - troca de 1 aresta
-        - adiciona uma aresta que está fora
-        - acho o ciclo que é formado
-        - removo arestas do ciclo a fim de trocar
-            - faço qual troca? analisar sempre custos e qual aresta sai e entra
-                - talvez um pair pra isso
-        - critério de aspiração
-
-
-
 
 K. qntd das melhores configurações que serão salvas
 H. qntd das melhores soluções achadas que serão salvas para escolha
@@ -41,10 +30,23 @@ class TabuSearch{
     int totLoops;
     double skewFactorEdges;
 
+    int tabuTenureInMin, tabuTenureInMax, tabuTenureIn;
+    int tabuTenureOutMin, tabuTenureOutMax, tabuTenureOut;
+
+    vector<int> inLog, outLog;
+
+    Forest bestSolution;
+
+    int bestNeighbours;
+
+
     TabuSearch(){
         noUpdtCount = 0;
         limit = ?;
         totLoops = ?;
+
+        tabuTenureIn = (tabuTenureInMin + tabuTenureInMax) / 2;
+        tabuTenureOut = (tabuTenureOutMin + tabuTenureOutMax) / 2;
     }
 
     void run(){
@@ -65,7 +67,7 @@ class TabuSearch{
                     nextNeighboard = bestNeighboard;
                 }else{
                     for(int i = 0; i < neighbourhood.size(); ++i){
-                        // se for tabu, bota que o custo eh zero
+                        // selecionar os bestNeighbours melhores vizinhos
                     }
 
                     RandomPoll rp(neighbourhoodCosts, skewFactorEdges);
@@ -73,8 +75,8 @@ class TabuSearch{
                     int chosenIndex = rp.poll();
                     nextNeighboard = neighbourhood[chosenIndex];
                 }
-                
-                forest.goToNeighbour(addedEdge);
+
+                forest.goToNeighbour(nextNeighboard);
                 updateTabu();
             }
             forest = solutionsPoller.getSolution();
@@ -83,6 +85,14 @@ class TabuSearch{
             destructiveHeuristic.destruct(forest, remEdges);
             constructiveHeuristic.construct(forest);
         }
+    }
+
+    void updateTabu(){
+        
+    }
+
+    void maybeUpdtBest(Forest *forest){
+        // todo
     }
 
 }
