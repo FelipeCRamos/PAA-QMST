@@ -249,7 +249,9 @@ class Parser{
 
         int getN(){ return n; }
         int getM(){ return m; }
+
         int** getCosts(){ return costs; }
+
         std::vector<std::pair<int,int>> getEdges(){ return edges; }
         // std::unordered_map<std::pair<int,int>, int> getEdgesIDs(){ return edgeID; }
 

@@ -53,38 +53,51 @@ int main(int argc, char **argv){
     int **costs = parser.getCosts(); // Discutir com felipe
     std::vector<std::pair<int,int>> edges = parser.getEdges();
 
-
-
     // ------------------------------------------------------------------------
     // PARSING FEITO, GRAFO MONTADO
     // ------------------------------------------------------------------------
 
+    // Definitions
+    const bool runBBound = false;
+    const bool runBackTrack = false;
+    const bool runSwarm = true;
 
-    BBoundAlgorithm bb(n, m, edges, costs);
+    if(runBBound) {
+        BBoundAlgorithm bb(n, m, edges, costs);
 
-    auto bbStartTime = std::chrono::high_resolution_clock::now();
-    auto result = bb.bbound();
-    auto bbEndTime = std::chrono::high_resolution_clock::now();
-    auto bbElapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(bbEndTime - bbStartTime);
+        auto bbStartTime = std::chrono::high_resolution_clock::now();
+        auto result = bb.bbound();
+        auto bbEndTime = std::chrono::high_resolution_clock::now();
+        auto bbElapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(bbEndTime - bbStartTime);
 
-    std::cout << "\nBranch and bound run stats: ";
-    std::cout << "n: " << n << "; m: " << m << "; solution: ";
-    std::cout << result << ";";
-    std::cout << "time (ms): " << bbElapsedTime.count() << ";";
-    std::cout << "visited states: " << bb.steps() << std::endl << std::endl;
+        std::cout << "\nBranch and bound run stats: ";
+        std::cout << "n: " << n << "; m: " << m << "; solution: ";
+        std::cout << result << ";";
+        std::cout << "time (ms): " << bbElapsedTime.count() << ";";
+        std::cout << "visited states: " << bb.steps() << std::endl << std::endl;
+    }
 
-    BacktrackAlgorithm b(n, m, edges, costs);
+    if(runBackTrack) {
+        BacktrackAlgorithm b(n, m, edges, costs);
 
-    auto btStartTime = std::chrono::high_resolution_clock::now();
-    result = b.backtrack();
-    auto btEndTime = std::chrono::high_resolution_clock::now();
-    auto btElapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(btEndTime - btStartTime);
+        auto btStartTime = std::chrono::high_resolution_clock::now();
+        auto result = b.backtrack();
+        auto btEndTime = std::chrono::high_resolution_clock::now();
+        auto btElapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(btEndTime - btStartTime);
 
-    std::cout << "Backtrack run stats: ";
-    std::cout << "n: " << n << "; m: " << m << "; solution: ";
-    std::cout << result << ";";
-    std::cout << "time (ms): " << btElapsedTime.count() << ";";
-    std::cout << "visited states: " << b.steps() << std::endl << std::endl;
+        std::cout << "Backtrack run stats: ";
+        std::cout << "n: " << n << "; m: " << m << "; solution: ";
+        std::cout << result << ";";
+        std::cout << "time (ms): " << btElapsedTime.count() << ";";
+        std::cout << "visited states: " << b.steps() << std::endl << std::endl;
+    }
+
+    if(runSwarm) {
+        std::cout << "~ Actual graph:" << std::endl;
+        std::cout << "\tNodes: " << n << std::endl;
+        std::cout << "\tEdges: " << m << std::endl;
+        std::cout << "\tCosts: " << std::endl;
+    }
 
     return 0;
 }
