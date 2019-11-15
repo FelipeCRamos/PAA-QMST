@@ -17,7 +17,7 @@
 #include "branchBound.h"
 
 #define PTAG "[AGMQ] "
-#define debug false
+#define debug true
 
 int main(int argc, char **argv){
 

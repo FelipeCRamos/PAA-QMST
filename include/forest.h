@@ -4,43 +4,44 @@
 #include "edge.h"
 
 class Forest{
-private:
-    void initRootedTree(int x){
-        currentRoot = x;
-        // TODO
-    }
-
-    static vector<Edge> avaibleEdges;
-    vector<int> edgeList;
-    vector<int> costs; // vetor d
-    int numNodes;
-    int cost;
-    int currentRoot;
-
-    void addEdge(int i){
-        // TODO
-        currentRoot = -1;
-    }
-
-    void removeEdge(int i){
-        // TODO
-        currentRoot = -1;
-    }
-
-    void rootTree(int x){
-        if(currentRoot == -1) initRootedTree(x);
-        else{
-            // TODO: trocar a raiz da rooted tree
+    private:
+        void initRootedTree(int x){
+            currentRoot = x;
+            // TODO
         }
-    }
 
-    void getNeighbourhood(vector<pair<int,int>> &neighbourhood, vector<int> &neighbourhoodCosts){
+        static vector<Edge> avaibleEdges;
 
-    }
+        vector<int> edgeList;
+        vector<int> costs; // vetor d
+        int numNodes;
+        int cost;
+        int currentRoot;
 
-    void goToNeighbour(pair<int,int> n){
+        void addEdge(int i){
+            // TODO
+            currentRoot = -1;
+        }
 
-    }
+        void removeEdge(int i){
+            // TODO
+            currentRoot = -1;
+        }
+
+        void rootTree(int x){
+            if(currentRoot == -1) initRootedTree(x);
+            else{
+                // TODO: trocar a raiz da rooted tree
+            }
+        }
+
+        void getNeighbourhood(vector<pair<int,int>> &neighbourhood, vector<int> &neighbourhoodCosts){
+
+        }
+
+        void goToNeighbour(pair<int,int> n){
+
+        }
 
 
 
