@@ -6,7 +6,7 @@
 #include <list>
 #include <algorithm>
 #include <sstream>
-
+#include <set>
 #include "forest.h"
 
 /*
@@ -58,7 +58,7 @@ namespace ParticleSwarm {
 
     } QuadraticCost;
 
-    class Tree {
+    class Graph {
         public:
             int numberOfVertices;
             int numberOfEdges;
@@ -66,9 +66,9 @@ namespace ParticleSwarm {
             std::vector<Edge> edges;
             std::vector<QuadraticCost> quadraticCosts;
 
-            Tree() {/* default */} // default constructor
+            Graph() {/* default */} // default constructor
 
-            Tree(int numberOfVertices, int numberOfEdges, int **costs, std::vector<std::pair<int, int>> edges) {
+            Graph(int numberOfVertices, int numberOfEdges, int **costs, std::vector<std::pair<int, int>> edges) {
                 this->numberOfVertices = numberOfVertices;
                 this->numberOfEdges = numberOfEdges;    
 
@@ -105,22 +105,43 @@ namespace ParticleSwarm {
             bool hasEdge(Vertice one, Vertice two) {
                 return getCost(one, two) != -1;
             }
+
+            // Overload to make std::set<Graph> work
+            friend bool operator<(const Graph &one, const Graph &another) {
+                if(one.cost < another.cost) {
+                    return true;
+                }
+                return false;
+            }
+
+            std::string print() {
+                std::stringstream ss;
+                ss << "Graph:\n";
+                ss << "\tVertices: " << this->numberOfVertices << "\n";
+                ss << "\tEdges: " << this->numberOfEdges << "\n";
+                ss << "\tCost: " << this->cost << "\n";
+                ss << "\tEdges:\n";
+                for(auto &edge : this->edges) {
+                    ss << "\t\t" << edge.print() << "\n";
+                }
+                return ss.str();
+            }
     };
 
     class PathRelinking {
         private:
-            Tree originalTree; 
-            Tree targetTree;
+            Graph originalGraph; 
+            Graph targetGraph;
         public:
             PathRelinking() {}
 
-            PathRelinking(Tree originalTree, Tree targetTree) {
-                this->originalTree = originalTree;
-                this->targetTree = targetTree;
+            PathRelinking(Graph originalGraph, Graph targetGraph) {
+                this->originalGraph = originalGraph;
+                this->targetGraph = targetGraph;
             }
 
             // Get a list of `numberOfRelinks` tree's in the way
-            std::list<Tree> relink(int numberOfRelinks) {}
+            std::list<Graph> relink(int numberOfRelinks) {}
 
         private:
             // internal funcs
@@ -128,12 +149,12 @@ namespace ParticleSwarm {
                 std::list<Edge> accEdges;
                 
                 // Get all edges that are not in the intersec of both tree's
-                for(auto &edge : this->originalTree.edges) {
-                    if( !this->targetTree.hasEdge(edge.v1, edge.v2) ) { accEdges.push_back(edge); }
+                for(auto &edge : this->originalGraph.edges) {
+                    if( !this->targetGraph.hasEdge(edge.v1, edge.v2) ) { accEdges.push_back(edge); }
                 }
 
-                for(auto &edge : this->targetTree.edges) {
-                    if( !this->originalTree.hasEdge(edge.v1, edge.v2) ) { accEdges.push_back(edge); }
+                for(auto &edge : this->targetGraph.edges) {
+                    if( !this->originalGraph.hasEdge(edge.v1, edge.v2) ) { accEdges.push_back(edge); }
                 }
 
                 // and return them
@@ -161,8 +182,134 @@ namespace ParticleSwarm {
             }
     };
 
-    Tree pathRelink(Tree original, Tree target) {
-         
+    /* Things used on ParticleSwarm in GFG */
+/*{{{*/
+    // A structure to represent a subset for union-find  
+    class subset  
+    {  
+        public: 
+        int parent;  
+        int rank;  
+    };  
+      
+    // A utility function to find set of an element i  
+    // (uses path compression technique)  
+    int find(subset subsets[], int i)  
+    {  
+        // find root and make root as parent of i  
+        // (path compression)  
+        if (subsets[i].parent != i)  
+            subsets[i].parent = find(subsets, subsets[i].parent);  
+      
+        return subsets[i].parent;  
+    }  
+      
+    // A function that does union of two sets of x and y  
+    // (uses union by rank)  
+    void Union(subset subsets[], int x, int y)  
+    {  
+        int xroot = find(subsets, x);  
+        int yroot = find(subsets, y);  
+      
+        // Attach smaller rank tree under root of high  
+        // rank tree (Union by Rank)  
+        if (subsets[xroot].rank < subsets[yroot].rank)  
+            subsets[xroot].parent = yroot;  
+        else if (subsets[xroot].rank > subsets[yroot].rank)  
+            subsets[yroot].parent = xroot;  
+      
+        // If ranks are same, then make one as root and  
+        // increment its rank by one  
+        else
+        {  
+            subsets[yroot].parent = xroot;  
+            subsets[xroot].rank++;  
+        }  
+    }  
+      
+    // Compare two edges according to their weights.  
+    // Used in qsort() for sorting an array of edges  
+    int myComp(const void* a, const void* b)  
+    {  
+        Edge* a1 = (Edge*)a;  
+        Edge* b1 = (Edge*)b;  
+        return a1->cost > b1->cost;  
+    }
+/*}}}*/
+    /* eof */
+
+    class ParticleSwarm{
+        private:
+            Graph originalGraph;
+            std::vector<int> edgeOrder;
+            std::set<Graph> trees;
+
+        public:
+            ParticleSwarm(Graph originalGraph) {
+                this->originalGraph = originalGraph;
+
+                // generate initial order
+                for(int i = 0; i < this->originalGraph.numberOfEdges; i++) {
+                    this->edgeOrder.push_back(i);
+                }
+
+                std::cout << "[particleSwarm] Original graph stored!\n";
+                std::cout << "[particleSwarm] Current Order:" << std::endl;
+                std::cout << printCurrentKruskalOrder() << std::endl;
+
+                // Generate the initial set of spanning trees
+                // and then wait to run the algorithm
+            }
+
+            void getNextOrderPermutation() {
+                std::next_permutation(edgeOrder.begin(), edgeOrder.end());
+            }
+
+            std::string printCurrentKruskalOrder() {
+                std::stringstream ss; 
+                ss << "[ ";
+                for( auto &it : this->edgeOrder ) { ss << it << " "; }
+                ss << "]";
+                return ss.str();
+            }
+
+            void generateKruskal() {
+                Graph genTree = Graph();
+                genTree.numberOfVertices = this->originalGraph.numberOfVertices;
+                genTree.numberOfEdges = this->originalGraph.numberOfEdges;
+
+                int e = 0, i = 0; // index variables
+                subset *subsets = new subset[(genTree.numberOfVertices * sizeof(subset))];
+
+                for(int v = 0; v < genTree.numberOfVertices; ++v) {
+                    subsets[v].parent = v;
+                    subsets[v].rank = 0;
+                }
+
+
+                /*
+                while( e < genTree.numberOfVertices - 1 && i < genTree.numberOfEdges ) {
+                    auto nextEdgeNumber = this->edgeOrder[i++];
+                    std::cout << "Next edge of the list: " << nextEdgeNumber << std::endl;
+                    Edge nextEdge = this->originalGraph.edges[nextEdgeNumber];
+                    // std::cout << "Working..." << std::endl;
+
+                    int x = find(subsets, nextEdge.v1);
+                    int y = find(subsets, nextEdge.v2);
+
+                    if(x != y) {
+                        // result[e++] = nextEdge;
+                        e++;
+                        genTree.edges.push_back(nextEdge);
+                        Union(subsets, x, y);
+                    }
+                }
+                */
+
+                std::cout << "result: " << std::endl;
+                std::cout << genTree.print() << std::endl;
+                delete[] subsets;
+            }
     };
 }
 

@@ -106,13 +106,18 @@ int main(int argc, char **argv){
         std::cout << "\tNodes: " << n << std::endl;
         std::cout << "\tEdges: " << m << std::endl;
         std::cout << "\tCosts: " << std::endl;
-        for( int aresta = 0; aresta < m; aresta++ ) {
-            for( int outraAresta = 0; outraAresta < m; outraAresta++ ) {
-                printf("Aresta [%i][%i] = %i\n", aresta, outraAresta, costs[aresta][outraAresta]);
-            }
-        }
+        // for( int aresta = 0; aresta < m; aresta++ ) {
+            // for( int outraAresta = 0; outraAresta < m; outraAresta++ ) {
+                // printf("Aresta [%i][%i] = %i\n", aresta, outraAresta, costs[aresta][outraAresta]);
+            // }
+        // }
 
-        ParticleSwarm::Tree one = ParticleSwarm::Tree(n, m, costs, edges);
+        ParticleSwarm::Graph originalGraph = ParticleSwarm::Graph(n, m, costs, edges);
+
+        auto particleSwarmAlgorithm = ParticleSwarm::ParticleSwarm(originalGraph);
+        for( int i = 0; i < 10; i++ ) {
+            particleSwarmAlgorithm.generateKruskal();
+        }
 
         // ParticleSwarm::PathRelinking(one, two);
     }
