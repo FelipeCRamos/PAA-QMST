@@ -4,4 +4,12 @@
 #define NBITS 120
 #define INF 100000
 
+typedef int edgeId;
+typedef int vertexId;
+typedef int costType;
+typedef int neighborCost;
+typedef std::pair<edgeId, edgeId> neighborType;
+typedef std::pair<vertexId, edgeId> rootedTreeNode;
+typedef int iterationType;
+
 #endif

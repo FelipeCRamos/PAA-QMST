@@ -4,21 +4,15 @@
 #include "edge.h"
 
 class Forest{
-    typedef int edgeId;
-    typedef int vertexId;
-    typedef int costType;
-    typedef int neighborCost;
-    typedef std::pair<vertexId, edgeId> rootedTreeNode;
-    typedef std::pair<edgeId, edgeId> neighborhoodNode;
+
 private:
 
     static vector<Edge> avaibleEdges;
     vector<edgeId> edgeList;
     vector<costType> costs; // vetor d
-    int numNodes;
-    int cost;
+    costType cost;
 
-    int currentRoot;
+    vertexId currentRoot;
     vector<rootedTreeNode> rootedTree;
 
     void initRootedTree(vertexId root){
@@ -46,18 +40,36 @@ private:
     	}
     }
 
-    void addEdge(edgeId i){
+    void addEdge(edgeId e, int pos = -1){
+        currentRoot = -1;
         edgeList.push_back(e);
-        currentRoot = -1;
+        for(int i = 0; i < avaibleEdges; ++i){
+            costs[i] += avaibleEdges[i].quadCosts[e];
+        }
+
+        if(pos != -1) edgeList[pos] = e;
+        else if(edgeList.size() == n - 1){
+            for(int i = 0; i < edgeList.size(); ++i){
+                if(edgeList[i] == -1){
+                    edgeList[i] = e;
+                }
+            }
+        }else{
+            edgeList.push_back(e);
+        }
     }
 
-    void removeEdge(edgeId e){
-        // TODO
+    int removeEdge(edgeId e){
         currentRoot = -1;
-    }
 
-    bool isEdgeOnTree(edgeId e){
-        // TODO
+        for(int i = 0; i < avaibleEdges; ++i)
+            costs[i] -= avaibleEdges[i].quadCosts[e];
+
+        for(int i = 0; i < edgeList.size(); ++i){
+            if(e == edgeList[i]){
+                edgeList[i] = -1;
+            }
+        }
     }
 
     void rootTree(vertexId newRoot){
@@ -98,37 +110,47 @@ private:
         }
     }
 
-    void getNeighborhood(vector<neighborhoodNode> &neighborhood, vector<neighborCost> &neighborhoodCosts, neighborhoodNode &best){
-        // para cada aresta que nao ta, boto ela
-        neighborCost bestCost = INF;
-        for(int i = 0; i < edgeList.size(); ++i){
-            if(isEdgeOnTree(i)) continue;
+    void getNeighborhood(vector<neighborType> &neighborhood, vector<costType> &neighborhoodCosts, int &bestNeighborIndex){
+        bestNeighborIndex = 0; // reset
 
+        for(int i = 0; i < edgeList.size(); ++i){
+            // get cycle formed by adding current edge
             std::vector<edgeId> cycle;
             getCycle(cycle, edgeList[i].v, edgeList[i].u);
 
-            for(auto &idEdge : cycle){
-                neighborhoodNode neighbor = {idEdge, i};
-                neighborCost neighborCost = costOfNeighbor(neighbor)
+            if(cycle.size() == 1) continue; // when the edge is already on the tree
+
+            for(auto &idEdge : cycle){ // iterating through edges on formed cycle
+                neighborType neighbor = {idEdge, i}; // retriving neighbor
+                costType neighborCost = costOfNeighbor(neighbor); // and its cost
+
+                // adding neighbor and its cost to the lists
                 neighborhood.push_back(neighbor);
                 neighborhoodCosts.push_back(neighborCost);
 
-                if(neighborCost < bestCost){
+                // maybe updating the best visited neighbor
+                if(neighborCost < neighborhoodCosts[bestNeighborIndex]){
                     bestCost = neighborCost;
-                    best = neighbor;
+                    bestNeighborIndex = neighborhood.size() - 1;
                 }
             }
         }
     }
 
     void goToNeighbor(neighborhoodNode &neighbor){
-        // addEdge;
-        // removeEdge;
-        // updt custos;
+        edgeId removedEdge = neighbor.first, addedEdge = neighbor.second;
+        cost += costs[addedEdge] - costs[removedEdge] - 2 * avaibleEdges[e1].quadCosts[addedEdge];
+        removeEdge(removedEdge);
+        addEdge(addedEdge);
     }
 
-    int costOfNeighbor(neighborhoodNode &neighbor){
-        // TODO
+    costType costOfNeighbor(neighborhoodNode &neighbor){
+        edgeId removedEdge = neighbor.first, addedEdge = neighbor.second;
+        return cost + costs[addedEdge] - costs[removedEdge] - 2 * avaibleEdges[e1].quadCosts[addedEdge];
+    }
+
+    bool isSolution(){
+        return edgeList.size() == N - 1;
     }
 
 

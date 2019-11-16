@@ -8,27 +8,33 @@
 class ConstructiveHeuristic{
 private:
     void build(Forest &forest, UnionFind &uf){
-        // para cada aresta em forest
-            // faz a ligacao do union find
+        for(auto &e : forest.edgeList){
+            vertexId u = forest.avaibleEdges[e].u;
+            vertexId v = forest.avaibleEdges[e].v;
+            uf.join(u, v);
+        }
     }
 
 public:
 
     ConstructiveHeuristic(){}
 
-    void construct(Forest &forest, vector<Edge> &edges){
+    void construct(Forest &forest){
         UnionFind uf;
-        // build do union find
 
-        // listar todas as arestas que nao estao na arvore
+        build(forest, uf); // union find building
 
         while(!forest.isSolution()){
-            // nao preciso refazer o vetor, eh so por valor = 0 de quem ja saiu
-            // ponderar pelo custo medio
-            RandomPoll rp(???????????????????);
+            vector<costType> costs = forest.costs;
+            for(auto &e : edgeList) costs[e] = 0;
+            for(auto &cost : costs){
+                if(cost != 0) cost = 1 / cost;
+            }
+
+            RandomPoll rp(cost);
             rp.prepareProbs();
             int chosenIndex = rp.poll();
-            forest.addEdge(????????[chosenIndex]);
+            forest.addEdge(costs[chosenIndex]);
         }
     }
 
