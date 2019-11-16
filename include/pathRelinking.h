@@ -20,7 +20,6 @@
         // Pensamento até o momento: Retornar melhor path relink encontrado entre as arvores
 */
 
-
 namespace ParticleSwarm {
     typedef int Vertice;
 
