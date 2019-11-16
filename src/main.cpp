@@ -8,6 +8,7 @@
 #include <algorithm>
 #include <map>
 #include <chrono>
+#include <random>
 
 // - Project custom libs
 #include "argParser.h"
@@ -113,10 +114,20 @@ int main(int argc, char **argv){
         // }
 
         ParticleSwarm::Graph originalGraph = ParticleSwarm::Graph(n, m, costs, edges);
+        // originalGraph.updateNumbers();
 
+        printf("--------------------- PARTICLE SWARM STARTS HERE\n");
         auto particleSwarmAlgorithm = ParticleSwarm::ParticleSwarm(originalGraph);
-        for( int i = 0; i < 10; i++ ) {
-            particleSwarmAlgorithm.generateKruskal();
+        for( int i = 0; i < 40; i++ ) {
+            auto generatedTree = particleSwarmAlgorithm.generateKruskal();
+            // if(generatedTree.numberOfVertices == originalGraph.numberOfVertices &&
+                    // generatedTree.numberOfEdges == originalGraph.numberOfVertices-1){
+                std::cout << "----------------------------------------\n";
+                std::cout << generatedTree.print() << std::endl;
+            // } else {
+                // std::cout << "FAILED!" << std::endl;
+            // }
+            particleSwarmAlgorithm.getNextOrderPermutation();
         }
 
         // ParticleSwarm::PathRelinking(one, two);

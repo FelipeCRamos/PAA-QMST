@@ -7,6 +7,8 @@
 #include <algorithm>
 #include <sstream>
 #include <set>
+#include <chrono>
+#include <random>
 #include "forest.h"
 
 /*
@@ -100,6 +102,24 @@ namespace ParticleSwarm {
                     }
                 }
                 return -1;
+            }
+
+            void updateNumbers() {
+                this->numberOfEdges = getNumberOfEdges();
+                this->numberOfVertices = getNumberOfVertices();
+            }
+
+            int getNumberOfVertices() {
+                std::set<int> vertices; // to remove duplicateds
+                for(auto &edge : this->edges) {
+                    vertices.insert(edge.v1);
+                    vertices.insert(edge.v2);
+                }
+                return vertices.size();
+            }
+
+            int getNumberOfEdges() {
+                return this->edges.size();
             }
 
             bool hasEdge(Vertice one, Vertice two) {
@@ -263,6 +283,9 @@ namespace ParticleSwarm {
 
             void getNextOrderPermutation() {
                 std::next_permutation(edgeOrder.begin(), edgeOrder.end());
+                // std::cout << "Made permutation.\n";
+                // auto seed = std::chrono::system_clock::now().time_since_epoch().count();
+                // shuffle(edgeOrder.begin(), edgeOrder.end(), std::default_random_engine(seed));
             }
 
             std::string printCurrentKruskalOrder() {
@@ -273,7 +296,10 @@ namespace ParticleSwarm {
                 return ss.str();
             }
 
-            void generateKruskal() {
+/*{{{*/
+            /* TRY GFG
+            Graph generateKruskal() {
+                // this->getNextOrderPermutation();
                 Graph genTree = Graph();
                 genTree.numberOfVertices = this->originalGraph.numberOfVertices;
                 genTree.numberOfEdges = this->originalGraph.numberOfEdges;
@@ -281,16 +307,17 @@ namespace ParticleSwarm {
                 int e = 0, i = 0; // index variables
                 subset *subsets = new subset[(genTree.numberOfVertices * sizeof(subset))];
 
-                for(int v = 0; v < genTree.numberOfVertices; ++v) {
+                for(int v = 0; v < genTree.numberOfVertices - 1; v++) {
                     subsets[v].parent = v;
                     subsets[v].rank = 0;
                 }
-
-
-                /*
-                while( e < genTree.numberOfVertices - 1 && i < genTree.numberOfEdges ) {
-                    auto nextEdgeNumber = this->edgeOrder[i++];
-                    std::cout << "Next edge of the list: " << nextEdgeNumber << std::endl;
+                
+                int whileCounter = 0;
+                while( e < genTree.numberOfVertices && i < genTree.numberOfEdges) {
+                    // std::cout << "Entered on while() loop " << whileCounter++ << " times.\n";
+                    auto nextEdgeNumber = this->edgeOrder[i];
+                    i += 1;
+                    // std::cout << "Next edge of the list: " << nextEdgeNumber << std::endl;
                     Edge nextEdge = this->originalGraph.edges[nextEdgeNumber];
                     // std::cout << "Working..." << std::endl;
 
@@ -303,12 +330,51 @@ namespace ParticleSwarm {
                         genTree.edges.push_back(nextEdge);
                         Union(subsets, x, y);
                     }
+                    // else {
+                        // std::cout << "x == y on edge: " << nextEdge.print() << std::endl;
+                    // }
                 }
-                */
 
-                std::cout << "result: " << std::endl;
-                std::cout << genTree.print() << std::endl;
+                genTree.updateNumbers();
+
+                // std::cout << "result: " << std::endl;
+                // std::cout << genTree.print() << std::endl;
                 delete[] subsets;
+                return genTree;
+            }
+            */
+            /*}}}*/
+
+            Graph generateKruskal() {
+                Graph genTree = Graph();
+
+                genTree.numberOfVertices = this->originalGraph.numberOfVertices;
+                genTree.numberOfEdges = this->originalGraph.numberOfEdges;
+
+                // Create spanning tree here // TODO PAULO
+
+                return genTree;
+                // TEMPORARY WORKAROUND
+                bool success = false;
+                while(!success) {
+                    // auto seed = std::chrono::system_clock::now().time_since_epoch().count();
+                    // shuffle(edgeOrder.begin(), edgeOrder.end(), std::default_random_engine(seed));
+                    this->getNextOrderPermutation();
+                    // for( auto &it : edgeOrder ) { std::cout << it << ", "; } std::cout << std::endl;
+
+                    // std::cout << "originalGraph.numberOfVertices() : " << originalGraph.numberOfVertices << std::endl;
+                    for(int i = 0; i < originalGraph.numberOfVertices - 1; i++) {
+                        genTree.edges.push_back(this->originalGraph.edges[edgeOrder[i++]]);
+                    }
+
+                    if(genTree.getNumberOfEdges() != this->originalGraph.numberOfVertices - 1) {
+                        success = false;
+                    } else {
+                        success = true;
+                        genTree.updateNumbers();
+                    }
+                }
+                return genTree;
             }
     };
 }
