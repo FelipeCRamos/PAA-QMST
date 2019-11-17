@@ -118,17 +118,29 @@ int main(int argc, char **argv){
 
         printf("--------------------- PARTICLE SWARM STARTS HERE\n");
         auto particleSwarmAlgorithm = ParticleSwarm::ParticleSwarm(originalGraph);
-        for( int i = 0; i < 40; i++ ) {
+
+        size_t generationsToAdvance = 100;
+        for(int i = 0; i < generationsToAdvance; i++) {
+            particleSwarmAlgorithm.advanceGeneration();
+        }
+
+        /*
+        for( int i = 0; i < 20; i++ ) {
             auto generatedTree = particleSwarmAlgorithm.generateKruskal();
             // if(generatedTree.numberOfVertices == originalGraph.numberOfVertices &&
                     // generatedTree.numberOfEdges == originalGraph.numberOfVertices-1){
-                std::cout << "----------------------------------------\n";
-                std::cout << generatedTree.print() << std::endl;
+                // std::cout << "----------------------------------------\n";
+                // std::cout << generatedTree.print() << std::endl;
             // } else {
                 // std::cout << "FAILED!" << std::endl;
             // }
+            std::cout << "Tree #" << i << " generated! Info:\n";
+            std::cout << "\tNo. Edges: " << generatedTree.numberOfEdges;
+            std::cout << ", No. Vertices: " << generatedTree.numberOfVertices;
+            std::cout << ", Cost: " << generatedTree.cost << std::endl;
             particleSwarmAlgorithm.getNextOrderPermutation();
         }
+        */
 
         // ParticleSwarm::PathRelinking(one, two);
     }

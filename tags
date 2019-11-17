@@ -1,15 +1,9 @@
 !_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
 !_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
-!_TAG_OUTPUT_MODE	u-ctags	/u-ctags or e-ctags/
-!_TAG_PROGRAM_AUTHOR	Universal Ctags Team	//
-!_TAG_PROGRAM_NAME	Universal Ctags	/Derived from Exuberant Ctags/
-!_TAG_PROGRAM_URL	https://ctags.io/	/official site/
-!_TAG_PROGRAM_VERSION	0.0.0	/3fdf28bc/
-$(BINDIR)	Makefile	/^$(BINDIR):$/;"	t
-$(OBJDIR)	Makefile	/^$(OBJDIR):$/;"	t
-$(OBJDIR)/%.o	Makefile	/^$(OBJECTS): $(OBJDIR)\/%.o : $(SRCDIR)\/%.cpp $(HEADERS) | $(OBJDIR)$/;"	t
-$(OBJECTS)	Makefile	/^$(OBJECTS): $(OBJDIR)\/%.o : $(SRCDIR)\/%.cpp $(HEADERS) | $(OBJDIR)$/;"	t
-Autores	README.md	/^## Autores$/;"	s
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
 BBoundAlgorithm	include/branchBound.h	/^        BBoundAlgorithm(int n, int m, edgeListType &edges, int **costs){$/;"	f	class:BBoundAlgorithm
 BBoundAlgorithm	include/branchBound.h	/^class BBoundAlgorithm{$/;"	c
 BINDIR	Makefile	/^BINDIR = .\/bin$/;"	m
@@ -17,6 +11,7 @@ BacktrackAlgorithm	include/backtrack.h	/^        BacktrackAlgorithm(int n, int m
 BacktrackAlgorithm	include/backtrack.h	/^class BacktrackAlgorithm{$/;"	c
 C	include/fileParser.h	/^        enum FileStates { N, M, EDGES, C, Q1, Q2, FINAL, DONEF, ERRORF };$/;"	e	enum:Parser::FileStates
 CC	Makefile	/^CC = g++$/;"	m
+CFLAGS	Makefile	/^CFLAGS = -Wall -w -g -ggdb -std=c++11 -I. -I$(INCDIR) # -Ofast$/;"	m
 CLOSEP	include/fileParser.h	/^        enum ListStates { OPENP, NUM, COMMA, CLOSEP, DONEL, ERRORL };$/;"	e	enum:Parser::ListStates
 COMMA	include/fileParser.h	/^        enum ListStates { OPENP, NUM, COMMA, CLOSEP, DONEL, ERRORL };$/;"	e	enum:Parser::ListStates
 ConstructiveHeuristic	include/constructiveHeuristic.h	/^    ConstructiveHeuristic(){}$/;"	f	class:ConstructiveHeuristic
@@ -31,11 +26,16 @@ ERRORF	include/fileParser.h	/^        enum FileStates { N, M, EDGES, C, Q1, Q2, 
 ERRORL	include/fileParser.h	/^        enum ListStates { OPENP, NUM, COMMA, CLOSEP, DONEL, ERRORL };$/;"	e	enum:Parser::ListStates
 Edge	include/edge.h	/^    Edge(int _u, int _v, int _lc, std::vector<int> &_qc):$/;"	f	class:Edge
 Edge	include/edge.h	/^class Edge{$/;"	c
-Edges	README.md	/^# Edges$/;"	c
-Execução do algoritmo	README.md	/^## Execução do algoritmo$/;"	s
+Edge	include/pathRelinking.h	/^    } Edge;$/;"	t	namespace:ParticleSwarm	typeref:struct:ParticleSwarm::Edge_s
+Edge_s	include/pathRelinking.h	/^        Edge_s() { v1 = 0; v2 = 0; cost = 0; }$/;"	f	struct:ParticleSwarm::Edge_s
+Edge_s	include/pathRelinking.h	/^        Edge_s(Vertice v1, Vertice v2, int cost) {$/;"	f	struct:ParticleSwarm::Edge_s
+Edge_s	include/pathRelinking.h	/^    typedef struct Edge_s {$/;"	s	namespace:ParticleSwarm
 FINAL	include/fileParser.h	/^        enum FileStates { N, M, EDGES, C, Q1, Q2, FINAL, DONEF, ERRORF };$/;"	e	enum:Parser::FileStates
 FileStates	include/fileParser.h	/^        enum FileStates { N, M, EDGES, C, Q1, Q2, FINAL, DONEF, ERRORF };$/;"	g	class:Parser
 Forest	include/forest.h	/^class Forest{$/;"	c
+Graph	include/pathRelinking.h	/^            Graph() {\/* default *\/} \/\/ default constructor$/;"	f	class:ParticleSwarm::Graph
+Graph	include/pathRelinking.h	/^            Graph(int numberOfVertices, int numberOfEdges, int **costs, std::vector<std::pair<int, int>> edges) {$/;"	f	class:ParticleSwarm::Graph
+Graph	include/pathRelinking.h	/^    class Graph {$/;"	c	namespace:ParticleSwarm
 HEADERS	Makefile	/^HEADERS := $(wildcard $(INCDIR)\/*)$/;"	m
 INCDIR	Makefile	/^INCDIR = .\/include$/;"	m
 INF	include/defines.h	/^#define INF /;"	d
@@ -43,10 +43,11 @@ LPLowerBound	include/LPLowerBound.h	/^        LPLowerBound(int _n, int _m, numTy
 LPLowerBound	include/LPLowerBound.h	/^class LPLowerBound{$/;"	c
 ListStates	include/fileParser.h	/^        enum ListStates { OPENP, NUM, COMMA, CLOSEP, DONEL, ERRORL };$/;"	g	class:Parser
 M	include/fileParser.h	/^        enum FileStates { N, M, EDGES, C, Q1, Q2, FINAL, DONEF, ERRORF };$/;"	e	enum:Parser::FileStates
+MAXN	include/kruskal.cpp	/^#define MAXN /;"	d	file:
 N	include/fileParser.h	/^        enum FileStates { N, M, EDGES, C, Q1, Q2, FINAL, DONEF, ERRORF };$/;"	e	enum:Parser::FileStates
 NBITS	include/defines.h	/^#define NBITS /;"	d
 NUM	include/fileParser.h	/^        enum ListStates { OPENP, NUM, COMMA, CLOSEP, DONEL, ERRORL };$/;"	e	enum:Parser::ListStates
-NUMBERS	include/fileParser.h	/^        const std::string NUMBERS = "0123456789";$/;"	m	class:Parser	typeref:typename:const std::string
+NUMBERS	include/fileParser.h	/^        const std::string NUMBERS = "0123456789";$/;"	m	class:Parser
 OBJDIR	Makefile	/^OBJDIR = .\/obj$/;"	m
 OBJECTS	Makefile	/^OBJECTS := $(SOURCES:$(SRCDIR)\/%.cpp=$(OBJDIR)\/%.o)$/;"	m
 OPENP	include/fileParser.h	/^        enum ListStates { OPENP, NUM, COMMA, CLOSEP, DONEL, ERRORL };$/;"	e	enum:Parser::ListStates
@@ -56,10 +57,18 @@ PROJ_NAME	Makefile	/^PROJ_NAME = agmq$/;"	m
 PTAG	src/main.cpp	/^#define PTAG /;"	d	file:
 Parser	include/fileParser.h	/^        Parser(std::string _fileName){$/;"	f	class:Parser
 Parser	include/fileParser.h	/^class Parser{$/;"	c
-PathRelinking	include/pathRelinking.h	/^class PathRelinking {$/;"	c
+ParticleSwarm	include/pathRelinking.h	/^            ParticleSwarm(Graph originalGraph, int numberOfParticles = 50) {$/;"	f	class:ParticleSwarm::ParticleSwarm
+ParticleSwarm	include/pathRelinking.h	/^    class ParticleSwarm{$/;"	c	namespace:ParticleSwarm
+ParticleSwarm	include/pathRelinking.h	/^namespace ParticleSwarm {$/;"	n
+PathRelinking	include/pathRelinking.h	/^            PathRelinking() {}$/;"	f	class:ParticleSwarm::PathRelinking
+PathRelinking	include/pathRelinking.h	/^            PathRelinking(Graph originalGraph, Graph targetGraph) {$/;"	f	class:ParticleSwarm::PathRelinking
+PathRelinking	include/pathRelinking.h	/^    class PathRelinking {$/;"	c	namespace:ParticleSwarm
 Q1	include/fileParser.h	/^        enum FileStates { N, M, EDGES, C, Q1, Q2, FINAL, DONEF, ERRORF };$/;"	e	enum:Parser::FileStates
 Q2	include/fileParser.h	/^        enum FileStates { N, M, EDGES, C, Q1, Q2, FINAL, DONEF, ERRORF };$/;"	e	enum:Parser::FileStates
-QMST Problem - NP Hard Project	README.md	/^# QMST Problem - NP Hard Project$/;"	c
+QuadraticCost	include/pathRelinking.h	/^    } QuadraticCost;$/;"	t	namespace:ParticleSwarm	typeref:struct:ParticleSwarm::QuadraticCost_s
+QuadraticCost_s	include/pathRelinking.h	/^        QuadraticCost_s(){}$/;"	f	struct:ParticleSwarm::QuadraticCost_s
+QuadraticCost_s	include/pathRelinking.h	/^        QuadraticCost_s(Edge e1, Edge e2, int cost) {$/;"	f	struct:ParticleSwarm::QuadraticCost_s
+QuadraticCost_s	include/pathRelinking.h	/^    typedef struct QuadraticCost_s {$/;"	s	namespace:ParticleSwarm
 RM	Makefile	/^RM = -rm$/;"	m
 RandomPoll	include/RandomPoll.h	/^    RandomPoll(vector<double> v, double sf){probs = v; skewFactor = sf;}$/;"	f	class:RandomPoll
 RandomPoll	include/RandomPoll.h	/^class RandomPoll{$/;"	c
@@ -67,18 +76,18 @@ SHELL	Makefile	/^SHELL = \/bin\/sh$/;"	m
 SOURCES	Makefile	/^SOURCES := $(wildcard $(SRCDIR)\/*.cpp)$/;"	m
 SRCDIR	Makefile	/^SRCDIR = .\/src$/;"	m
 SolutionsPoller	include/SolutionsPoller.h	/^class SolutionsPoller{$/;"	c
-SolutionsPooler	include/SolutionsPoller.h	/^        SolutionsPooler(int _maxSize, double _skewValue): maxSize(_maxSize), skewValue(_skewValu/;"	f	class:SolutionsPoller
+SolutionsPooler	include/SolutionsPoller.h	/^        SolutionsPooler(int _maxSize, double _skewValue): maxSize(_maxSize), skewValue(_skewValue){}$/;"	f	class:SolutionsPoller
 State	include/branchBound.h	/^    State(int ne, int c, maskType v, maskType chos, int ac){$/;"	f	struct:State
 State	include/branchBound.h	/^struct State{$/;"	s
 TabuSearch	include/tabuSearch.h	/^    TabuSearch(){$/;"	f	class:TabuSearch
 TabuSearch	include/tabuSearch.h	/^class TabuSearch{$/;"	c
-Tree	include/pathRelinking.h	/^} Tree;$/;"	t	typeref:struct:Tree_s
-Tree_s	include/pathRelinking.h	/^typedef struct Tree_s {$/;"	s
+Union	include/pathRelinking.h	/^    void Union(std::vector<subset> &subsets, int x, int y) {$/;"	f	namespace:ParticleSwarm
+Union	include/pathRelinking.h	/^    void Union(subset subsets[], int x, int y)  $/;"	f	namespace:ParticleSwarm
 UnionFind	include/unionFind.h	/^        UnionFind(int n){$/;"	f	class:UnionFind
 UnionFind	include/unionFind.h	/^class UnionFind{$/;"	c
 UnionFindNRB	include/unionFind.h	/^        UnionFindNRB(int n){$/;"	f	class:UnionFindNRB
 UnionFindNRB	include/unionFind.h	/^class UnionFindNRB{$/;"	c
-Vertice	include/pathRelinking.h	/^typedef int Vertice;$/;"	t	typeref:typename:int
+Vertice	include/pathRelinking.h	/^    typedef int Vertice;$/;"	t	namespace:ParticleSwarm
 _ARG_PARSER_H_	include/argParser.h	/^#define _ARG_PARSER_H_$/;"	d
 _BACKTRACK_H_	include/backtrack.h	/^#define _BACKTRACK_H_$/;"	d
 _BBOUND_H_	include/branchBound.h	/^#define _BBOUND_H_$/;"	d
@@ -92,156 +101,183 @@ _PATH_RELINLING_H	include/pathRelinking.h	/^#define _PATH_RELINLING_H$/;"	d
 _PB_LOWER_BOUND_H_	include/PBLowerBound.h	/^#define _PB_LOWER_BOUND_H_$/;"	d
 _POOLER_H_	include/SolutionsPoller.h	/^#define _POOLER_H_$/;"	d
 _UNION_FIND_H_	include/unionFind.h	/^#define _UNION_FIND_H_$/;"	d
-_backtrack	include/backtrack.h	/^        int _backtrack(int i, int cost){$/;"	f	class:BacktrackAlgorithm	typeref:typename:int
-_bbound	include/branchBound.h	/^        int _bbound(){$/;"	f	class:BBoundAlgorithm	typeref:typename:int
-_costs	include/backtrack.h	/^        int **_costs;                           \/\/!< Matriz de custos$/;"	m	class:BacktrackAlgorithm	typeref:typename:int **
-_costs	include/branchBound.h	/^        int **_costs; \/\/ matriz de custos$/;"	m	class:BBoundAlgorithm	typeref:typename:int **
+_backtrack	include/backtrack.h	/^        int _backtrack(int i, int cost){$/;"	f	class:BacktrackAlgorithm
+_bbound	include/branchBound.h	/^        int _bbound(){$/;"	f	class:BBoundAlgorithm
+_costs	include/backtrack.h	/^        int **_costs;                           \/\/!< Matriz de custos$/;"	m	class:BacktrackAlgorithm
+_costs	include/branchBound.h	/^        int **_costs; \/\/ matriz de custos$/;"	m	class:BBoundAlgorithm
 _defines_h_	include/defines.h	/^#define _defines_h_$/;"	d
-_edges	include/backtrack.h	/^        std::vector<std::pair<int,int>> _edges; \/\/!< Lista com todas as arestas$/;"	m	class:BacktrackAlgorithm	typeref:typename:std::vector<std::pair<int,int>>
-_edges	include/branchBound.h	/^        edgeListType _edges; \/\/ lista com todas as arestas$/;"	m	class:BBoundAlgorithm	typeref:typename:edgeListType
-_getPath	include/pathRelinking.h	/^        std::list<Edge> _getPath(Vertice actual, Vertice destiny, std::vector<bool> &visited) {$/;"	f	class:PathRelinking	typeref:typename:std::list<Edge>
-_m	include/backtrack.h	/^        int _m, _n;                             \/\/!< Qntd de arestas e de nós$/;"	m	class:BacktrackAlgorithm	typeref:typename:int
-_m	include/branchBound.h	/^        int _m, _n; \/\/ qntd de arestas e de nos$/;"	m	class:BBoundAlgorithm	typeref:typename:int
-_n	include/backtrack.h	/^        int _m, _n;                             \/\/!< Qntd de arestas e de nós$/;"	m	class:BacktrackAlgorithm	typeref:typename:int
-_n	include/branchBound.h	/^        int _m, _n; \/\/ qntd de arestas e de nos$/;"	m	class:BBoundAlgorithm	typeref:typename:int
-_n	include/unionFind.h	/^        int _n;$/;"	m	class:UnionFind	typeref:typename:int
-_n	include/unionFind.h	/^        int _n;$/;"	m	class:UnionFindNRB	typeref:typename:int
-addEdge	include/forest.h	/^        void addEdge(int i){$/;"	f	class:Forest	typeref:typename:void
-addSolution	include/SolutionsPoller.h	/^        void addSolution(Forest &solution){$/;"	f	class:SolutionsPoller	typeref:typename:void
-all	Makefile	/^all: project$/;"	t
-allocateCosts	include/fileParser.h	/^        void allocateCosts(){$/;"	f	class:Parser	typeref:typename:void
-alreadyChosen	include/branchBound.h	/^    int nextEdge, cost, alreadyChosen;$/;"	m	struct:State	typeref:typename:int
-argument_type	include/fileParser.h	/^        typedef pair<int,int> argument_type;$/;"	t	struct:std::hash	typeref:typename:pair<int,int>
-avaibleEdges	include/forest.h	/^        static vector<Edge> avaibleEdges;$/;"	m	class:Forest	typeref:typename:vector<Edge>
-backtrack	include/backtrack.h	/^        int backtrack(){$/;"	f	class:BacktrackAlgorithm	typeref:typename:int
-bbound	include/branchBound.h	/^        int bbound(){$/;"	f	class:BBoundAlgorithm	typeref:typename:int
-build	include/constructiveHeuristic.h	/^    void build(Forest &forest, UnionFind &uf){$/;"	f	class:ConstructiveHeuristic	typeref:typename:void
-c	README.md	/^# c$/;"	c
-chosen	include/branchBound.h	/^    maskType visited, chosen;$/;"	m	struct:State	typeref:typename:maskType
-clean	Makefile	/^clean: clean_proj$/;"	t
-clean_proj	Makefile	/^clean_proj:$/;"	t
-cmp	include/PBLowerBound.h	/^bool cmp(std::pair<numType,int> &a, std::pair<numType,int> &b){$/;"	f	typeref:typename:bool
-computeLB	include/branchBound.h	/^    void computeLB(int n, int m, edgeListType &edges, int **costs, numType *piParameters, \\$/;"	f	struct:State	typeref:typename:void
-construct	include/constructiveHeuristic.h	/^    void construct(Forest &forest, vector<Edge> &edges){$/;"	f	class:ConstructiveHeuristic	typeref:typename:void
-constructiveHeuristic	include/tabuSearch.h	/^    ConstructiveHeuristic constructiveHeuristic;$/;"	m	class:TabuSearch	typeref:typename:ConstructiveHeuristic
-cost	include/branchBound.h	/^    int nextEdge, cost, alreadyChosen;$/;"	m	struct:State	typeref:typename:int
-cost	include/forest.h	/^        int cost;$/;"	m	class:Forest	typeref:typename:int
-cost	include/pathRelinking.h	/^    int cost; \/\/ stub$/;"	m	struct:Tree_s	typeref:typename:int
-costs	include/fileParser.h	/^        int **costs;$/;"	m	class:Parser	typeref:typename:int **
-costs	include/forest.h	/^        vector<int> costs; \/\/ vetor d$/;"	m	class:Forest	typeref:typename:vector<int>
-counter	include/backtrack.h	/^        long int counter = 0;$/;"	m	class:BacktrackAlgorithm	typeref:typename:long int
-counter	include/branchBound.h	/^        long int counter = 0;$/;"	m	class:BBoundAlgorithm	typeref:typename:long int
-currentRoot	include/forest.h	/^        int currentRoot;$/;"	m	class:Forest	typeref:typename:int
+_edges	include/backtrack.h	/^        std::vector<std::pair<int,int>> _edges; \/\/!< Lista com todas as arestas$/;"	m	class:BacktrackAlgorithm
+_edges	include/branchBound.h	/^        edgeListType _edges; \/\/ lista com todas as arestas$/;"	m	class:BBoundAlgorithm
+_getPath	include/pathRelinking.h	/^            std::list<Edge> _getPath(Vertice actual, Vertice destiny, std::vector<bool> &visited) {$/;"	f	class:ParticleSwarm::PathRelinking
+_m	include/backtrack.h	/^        int _m, _n;                             \/\/!< Qntd de arestas e de nós$/;"	m	class:BacktrackAlgorithm
+_m	include/branchBound.h	/^        int _m, _n; \/\/ qntd de arestas e de nos$/;"	m	class:BBoundAlgorithm
+_n	include/backtrack.h	/^        int _m, _n;                             \/\/!< Qntd de arestas e de nós$/;"	m	class:BacktrackAlgorithm
+_n	include/branchBound.h	/^        int _m, _n; \/\/ qntd de arestas e de nos$/;"	m	class:BBoundAlgorithm
+_n	include/unionFind.h	/^        int _n;$/;"	m	class:UnionFind
+_n	include/unionFind.h	/^        int _n;$/;"	m	class:UnionFindNRB
+a	include/kruskal.cpp	/^vector<pair<size_t,pair<size_t,size_t>>> a; \/\/ vetor com arestas$/;"	v
+addEdge	include/forest.h	/^        void addEdge(int i){$/;"	f	class:Forest
+addSolution	include/SolutionsPoller.h	/^        void addSolution(Forest &solution){$/;"	f	class:SolutionsPoller
+allocateCosts	include/fileParser.h	/^        void allocateCosts(){$/;"	f	class:Parser
+alreadyChosen	include/branchBound.h	/^    int nextEdge, cost, alreadyChosen;$/;"	m	struct:State
+argument_type	include/fileParser.h	/^        typedef pair<int,int> argument_type;$/;"	t	struct:std::hash
+avaibleEdges	include/forest.h	/^        static std::vector<Edge> avaibleEdges;$/;"	m	class:Forest
+backtrack	include/backtrack.h	/^        int backtrack(){$/;"	f	class:BacktrackAlgorithm
+bbound	include/branchBound.h	/^        int bbound(){$/;"	f	class:BBoundAlgorithm
+build	include/constructiveHeuristic.h	/^    void build(Forest &forest, UnionFind &uf){$/;"	f	class:ConstructiveHeuristic
+chosen	include/branchBound.h	/^    maskType visited, chosen;$/;"	m	struct:State
+cmp	include/PBLowerBound.h	/^bool cmp(std::pair<numType,int> &a, std::pair<numType,int> &b){$/;"	f
+computeLB	include/branchBound.h	/^    void computeLB(int n, int m, edgeListType &edges, int **costs, numType *piParameters, \\$/;"	f	struct:State
+construct	include/constructiveHeuristic.h	/^    void construct(Forest &forest, vector<Edge> &edges){$/;"	f	class:ConstructiveHeuristic
+constructiveHeuristic	include/tabuSearch.h	/^    ConstructiveHeuristic constructiveHeuristic;$/;"	m	class:TabuSearch
+cost	include/branchBound.h	/^    int nextEdge, cost, alreadyChosen;$/;"	m	struct:State
+cost	include/forest.h	/^        int cost;$/;"	m	class:Forest
+cost	include/pathRelinking.h	/^            int cost;$/;"	m	class:ParticleSwarm::Graph
+cost	include/pathRelinking.h	/^        int cost;$/;"	m	struct:ParticleSwarm::Edge_s
+cost	include/pathRelinking.h	/^        int cost;$/;"	m	struct:ParticleSwarm::QuadraticCost_s
+costs	include/fileParser.h	/^        int **costs;$/;"	m	class:Parser
+costs	include/forest.h	/^        std::vector<int> costs; \/\/ vetor d$/;"	m	class:Forest
+counter	include/backtrack.h	/^        long int counter = 0;$/;"	m	class:BacktrackAlgorithm
+counter	include/branchBound.h	/^        long int counter = 0;$/;"	m	class:BBoundAlgorithm
+currentRoot	include/forest.h	/^        int currentRoot;$/;"	m	class:Forest
 debug	src/main.cpp	/^#define debug /;"	d	file:
-delta	include/LPLowerBound.h	/^        numType delta;$/;"	m	class:LPLowerBound	typeref:typename:numType
-desctruct	include/destructiveHeuristic.h	/^    void desctruct(Forest &forest, int numRemovals){$/;"	f	class:DestructiveHeuristic	typeref:typename:void
-destructiveHeuristic	include/tabuSearch.h	/^    DestructiveHeuristic destructiveHeuristic;$/;"	m	class:TabuSearch	typeref:typename:DestructiveHeuristic
-done	include/backtrack.h	/^        bool done = false;$/;"	m	class:BacktrackAlgorithm	typeref:typename:bool
-edgeID	include/fileParser.h	/^        std::unordered_map<std::pair<int,int>, int> edgeID;$/;"	m	class:Parser	typeref:typename:std::unordered_map<std::pair<int,int>,int>
-edgeList	include/forest.h	/^        vector<int> edgeList;$/;"	m	class:Forest	typeref:typename:vector<int>
+delta	include/LPLowerBound.h	/^        numType delta;$/;"	m	class:LPLowerBound
+desctruct	include/destructiveHeuristic.h	/^    void desctruct(Forest &forest, int numRemovals){$/;"	f	class:DestructiveHeuristic
+destructiveHeuristic	include/tabuSearch.h	/^    DestructiveHeuristic destructiveHeuristic;$/;"	m	class:TabuSearch
+done	include/backtrack.h	/^        bool done = false;$/;"	m	class:BacktrackAlgorithm
+e1	include/pathRelinking.h	/^        Edge e1;$/;"	m	struct:ParticleSwarm::QuadraticCost_s
+e2	include/pathRelinking.h	/^        Edge e2;$/;"	m	struct:ParticleSwarm::QuadraticCost_s
+edgeID	include/fileParser.h	/^        std::unordered_map<std::pair<int,int>, int> edgeID;$/;"	m	class:Parser
+edgeList	include/forest.h	/^        std::vector<int> edgeList;$/;"	m	class:Forest
 edgeListType	include/LPLowerBound.h	/^#define edgeListType /;"	d
 edgeListType	include/PBLowerBound.h	/^#define edgeListType /;"	d
 edgeListType	include/branchBound.h	/^#define edgeListType /;"	d
-edges	include/fileParser.h	/^        std::vector<std::pair<int,int>> edges;$/;"	m	class:Parser	typeref:typename:std::vector<std::pair<int,int>>
-edges	include/pathRelinking.h	/^    Edge edges;$/;"	m	struct:Tree_s	typeref:typename:Edge
-eof	README.md	/^# eof$/;"	c
-error	include/helpFn.h	/^std::string error(std::string errorName, std::string helpText = "") {$/;"	f	typeref:typename:std::string
-fCosts	include/LPLowerBound.h	/^        numType *fCosts;$/;"	m	class:LPLowerBound	typeref:typename:numType *
-fCosts	include/branchBound.h	/^        numType *fCosts;$/;"	m	class:BBoundAlgorithm	typeref:typename:numType *
-f_i	include/PBLowerBound.h	/^        numType f_i(edgeListType &edges,  maskType visited, maskType chosen, \\$/;"	f	class:PBLowerBound	typeref:typename:numType
-fileName	include/fileParser.h	/^        std::string fileName;$/;"	m	class:Parser	typeref:typename:std::string
-find	include/unionFind.h	/^        int find(int current){$/;"	f	class:UnionFind	typeref:typename:int
-find	include/unionFind.h	/^        int find(int current){$/;"	f	class:UnionFindNRB	typeref:typename:int
-forestSet	include/SolutionsPoller.h	/^        set<Forest> forestSet;$/;"	m	class:SolutionsPoller	typeref:typename:set<Forest>
-getCosts	include/fileParser.h	/^        int** getCosts(){ return costs; }$/;"	f	class:Parser	typeref:typename:int **
-getEdges	include/fileParser.h	/^        std::vector<std::pair<int,int>> getEdges(){ return edges; }$/;"	f	class:Parser	typeref:typename:std::vector<std::pair<int,int>>
-getM	include/fileParser.h	/^        int getM(){ return m; }$/;"	f	class:Parser	typeref:typename:int
-getN	include/fileParser.h	/^        int getN(){ return n; }$/;"	f	class:Parser	typeref:typename:int
-getNeighbourhood	include/forest.h	/^        void getNeighbourhood(vector<pair<int,int>> &neighbourhood, vector<int> &neighbourhoodCo/;"	f	class:Forest	typeref:typename:void
-getPath	include/pathRelinking.h	/^        std::list<Edge> getPath(Vertice source, Vertice destiny) {$/;"	f	class:PathRelinking	typeref:typename:std::list<Edge>
-getSimmetryDifferenceEdges	include/pathRelinking.h	/^        std::list<Edge> getSimmetryDifferenceEdges(Tree origin, Tree destiny) {$/;"	f	class:PathRelinking	typeref:typename:std::list<Edge>
-getSolution	include/SolutionsPoller.h	/^        Forest getSolution(){$/;"	f	class:SolutionsPoller	typeref:typename:Forest
-goToNeighbour	include/forest.h	/^        void goToNeighbour(pair<int,int> n){$/;"	f	class:Forest	typeref:typename:void
+edgeOrder	include/pathRelinking.h	/^            std::vector<int> edgeOrder;$/;"	m	class:ParticleSwarm::ParticleSwarm
+edges	include/fileParser.h	/^        std::vector<std::pair<int,int>> edges;$/;"	m	class:Parser
+edges	include/pathRelinking.h	/^            std::vector<Edge> edges;$/;"	m	class:ParticleSwarm::Graph
+error	include/helpFn.h	/^std::string error(std::string errorName, std::string helpText = "") {$/;"	f
+fCosts	include/LPLowerBound.h	/^        numType *fCosts;$/;"	m	class:LPLowerBound
+fCosts	include/branchBound.h	/^        numType *fCosts;$/;"	m	class:BBoundAlgorithm
+f_i	include/PBLowerBound.h	/^        numType f_i(edgeListType &edges,  maskType visited, maskType chosen, \\$/;"	f	class:PBLowerBound
+fileName	include/fileParser.h	/^        std::string fileName;$/;"	m	class:Parser
+find	include/kruskal.cpp	/^size_t find(size_t cur){ \/\/ Find do union find com comp de caminho$/;"	f
+find	include/pathRelinking.h	/^    int find(std::vector<subset> &subsets, int i) {$/;"	f	namespace:ParticleSwarm
+find	include/pathRelinking.h	/^    int find(subset subsets[], int i)  $/;"	f	namespace:ParticleSwarm
+find	include/unionFind.h	/^        int find(int current){$/;"	f	class:UnionFind
+find	include/unionFind.h	/^        int find(int current){$/;"	f	class:UnionFindNRB
+forestSet	include/SolutionsPoller.h	/^        set<Forest> forestSet;$/;"	m	class:SolutionsPoller
+generateKruskal	include/pathRelinking.h	/^            Graph generateKruskal() {$/;"	f	class:ParticleSwarm::ParticleSwarm
+getCost	include/pathRelinking.h	/^            int getCost(Vertice one, Vertice two) {$/;"	f	class:ParticleSwarm::Graph
+getCosts	include/fileParser.h	/^        int** getCosts(){ return costs; }$/;"	f	class:Parser
+getEdges	include/fileParser.h	/^        std::vector<std::pair<int,int>> getEdges(){ return edges; }$/;"	f	class:Parser
+getM	include/fileParser.h	/^        int getM(){ return m; }$/;"	f	class:Parser
+getN	include/fileParser.h	/^        int getN(){ return n; }$/;"	f	class:Parser
+getNeighbourhood	include/forest.h	/^        void getNeighbourhood(std::vector<std::pair<int,int>> &neighbourhood, std::vector<int> &neighbourhoodCosts){$/;"	f	class:Forest
+getNextOrderPermutation	include/pathRelinking.h	/^            void getNextOrderPermutation() {$/;"	f	class:ParticleSwarm::ParticleSwarm
+getNumberOfEdges	include/pathRelinking.h	/^            int getNumberOfEdges() {$/;"	f	class:ParticleSwarm::Graph
+getNumberOfVertices	include/pathRelinking.h	/^            int getNumberOfVertices() {$/;"	f	class:ParticleSwarm::Graph
+getPath	include/pathRelinking.h	/^            std::list<Edge> getPath(Vertice source, Vertice destiny) {$/;"	f	class:ParticleSwarm::PathRelinking
+getSimmetryDifferenceEdges	include/pathRelinking.h	/^            std::list<Edge> getSimmetryDifferenceEdges() {$/;"	f	class:ParticleSwarm::PathRelinking
+getSolution	include/SolutionsPoller.h	/^        Forest getSolution(){$/;"	f	class:SolutionsPoller
+goToNeighbour	include/forest.h	/^        void goToNeighbour(std::pair<int,int> n){$/;"	f	class:Forest
+hasEdge	include/pathRelinking.h	/^            bool hasEdge(Vertice one, Vertice two) {$/;"	f	class:ParticleSwarm::Graph
 hash	include/fileParser.h	/^    template<> struct hash<pair<int,int>>$/;"	s	namespace:std
-initRootedTree	include/forest.h	/^        void initRootedTree(int x){$/;"	f	class:Forest	typeref:typename:void
-intoProb	include/RandomPoll.h	/^    void intoProb(){$/;"	f	class:RandomPoll	typeref:typename:void
-iterator	include/SolutionsPoller.h	/^    typedef iterType set<Forest>::iterator;$/;"	t	class:SolutionsPoller	typeref:typename:iterType set<Forest>::
-join	include/unionFind.h	/^        void join(int a, int b){$/;"	f	class:UnionFind	typeref:typename:void
-join	include/unionFind.h	/^        void join(int a, int b){$/;"	f	class:UnionFindNRB	typeref:typename:void
-kruskal	include/PBLowerBound.h	/^        int kruskal(kruskalListType &kruskalList, edgeListType &edges, \\$/;"	f	class:PBLowerBound	typeref:typename:int
+initRootedTree	include/forest.h	/^        void initRootedTree(int x){$/;"	f	class:Forest
+intoProb	include/RandomPoll.h	/^    void intoProb(){$/;"	f	class:RandomPoll
+iterator	include/SolutionsPoller.h	/^    typedef iterType set<Forest>::iterator;$/;"	t	class:SolutionsPoller::set
+join	include/kruskal.cpp	/^void join(size_t x, size_t y){ \/\/ Union do union find$/;"	f
+join	include/unionFind.h	/^        void join(int a, int b){$/;"	f	class:UnionFind
+join	include/unionFind.h	/^        void join(int a, int b){$/;"	f	class:UnionFindNRB
+kruskal	include/PBLowerBound.h	/^        int kruskal(kruskalListType &kruskalList, edgeListType &edges, \\$/;"	f	class:PBLowerBound
+kruskal	include/kruskal.cpp	/^vector<pair<size_t,pair<size_t,size_t>>> kruskal(size_t n){ \/\/ param: tamanho do grafo$/;"	f
 kruskalListType	include/PBLowerBound.h	/^#define kruskalListType /;"	d
-levelingProcedure	include/LPLowerBound.h	/^        numType levelingProcedure(edgeListType edges, maskType &visited, maskType &chosen, \\$/;"	f	class:LPLowerBound	typeref:typename:numType
-limit	include/tabuSearch.h	/^    int limit;$/;"	m	class:TabuSearch	typeref:typename:int
-linearCost	include/edge.h	/^    int linearCost; \/\/ linear cost of the edge$/;"	m	class:Edge	typeref:typename:int
-lowerBound	include/branchBound.h	/^    numType lowerBound;$/;"	m	struct:State	typeref:typename:numType
-m	README.md	/^# m$/;"	c
-m	include/LPLowerBound.h	/^        int n, m;$/;"	m	class:LPLowerBound	typeref:typename:int
-m	include/PBLowerBound.h	/^        int n, m;$/;"	m	class:PBLowerBound	typeref:typename:int
-m	include/fileParser.h	/^        int n, m;$/;"	m	class:Parser	typeref:typename:int
-main	src/main.cpp	/^int main(int argc, char **argv){$/;"	f	typeref:typename:int
+levelingProcedure	include/LPLowerBound.h	/^        numType levelingProcedure(edgeListType edges, maskType &visited, maskType &chosen, \\$/;"	f	class:LPLowerBound
+limit	include/tabuSearch.h	/^    int limit;$/;"	m	class:TabuSearch
+linearCost	include/edge.h	/^    int linearCost; \/\/ linear cost of the edge$/;"	m	class:Edge
+lowerBound	include/branchBound.h	/^    numType lowerBound;$/;"	m	struct:State
+m	include/LPLowerBound.h	/^        int n, m;$/;"	m	class:LPLowerBound
+m	include/PBLowerBound.h	/^        int n, m;$/;"	m	class:PBLowerBound
+m	include/fileParser.h	/^        int n, m;$/;"	m	class:Parser
+main	src/main.cpp	/^int main(int argc, char **argv){$/;"	f
 maskType	include/LPLowerBound.h	/^#define maskType /;"	d
 maskType	include/PBLowerBound.h	/^#define maskType /;"	d
 maskType	include/branchBound.h	/^#define maskType /;"	d
-maxSize	include/SolutionsPoller.h	/^        int maxSize;$/;"	m	class:SolutionsPoller	typeref:typename:int
-n	README.md	/^# n$/;"	c
-n	include/LPLowerBound.h	/^        int n, m;$/;"	m	class:LPLowerBound	typeref:typename:int
-n	include/PBLowerBound.h	/^        int n, m;$/;"	m	class:PBLowerBound	typeref:typename:int
-n	include/fileParser.h	/^        int n, m;$/;"	m	class:Parser	typeref:typename:int
-nextEdge	include/branchBound.h	/^    int nextEdge, cost, alreadyChosen;$/;"	m	struct:State	typeref:typename:int
-noUpdtCount	include/tabuSearch.h	/^    int noUpdtCount;$/;"	m	class:TabuSearch	typeref:typename:int
-numNodes	include/forest.h	/^        int numNodes;$/;"	m	class:Forest	typeref:typename:int
+maxSize	include/SolutionsPoller.h	/^        int maxSize;$/;"	m	class:SolutionsPoller
+myComp	include/pathRelinking.h	/^    int myComp(const void* a, const void* b)  $/;"	f	namespace:ParticleSwarm
+n	include/LPLowerBound.h	/^        int n, m;$/;"	m	class:LPLowerBound
+n	include/PBLowerBound.h	/^        int n, m;$/;"	m	class:PBLowerBound
+n	include/fileParser.h	/^        int n, m;$/;"	m	class:Parser
+nextEdge	include/branchBound.h	/^    int nextEdge, cost, alreadyChosen;$/;"	m	struct:State
+noUpdtCount	include/tabuSearch.h	/^    int noUpdtCount;$/;"	m	class:TabuSearch
+numNodes	include/forest.h	/^        int numNodes;$/;"	m	class:Forest
 numType	include/LPLowerBound.h	/^#define numType /;"	d
 numType	include/PBLowerBound.h	/^#define numType /;"	d
 numType	include/branchBound.h	/^#define numType /;"	d
-operator ()	include/fileParser.h	/^        result_type operator()(argument_type const& s) const noexcept$/;"	f	struct:std::hash	typeref:typename:result_type
-operator <	include/branchBound.h	/^bool operator <(const State & a, const State & b){$/;"	f	typeref:typename:bool
-operator <	include/edge.h	/^    bool operator<(const Edge& e) const {$/;"	f	class:Edge	typeref:typename:bool
-operator ==	include/edge.h	/^    bool operator==(const Edge& e) const {$/;"	f	class:Edge	typeref:typename:bool
-originalTree	include/pathRelinking.h	/^        Tree originalTree; $/;"	m	class:PathRelinking	typeref:typename:Tree
-parents	include/unionFind.h	/^        int *parents;$/;"	m	class:UnionFind	typeref:typename:int *
-parents	include/unionFind.h	/^        int *parents;$/;"	m	class:UnionFindNRB	typeref:typename:int *
-parse	include/fileParser.h	/^        bool parse(){$/;"	f	class:Parser	typeref:typename:bool
-parseFilename	include/argParser.h	/^std::string parseFilename(int argc, char **argv) {$/;"	f	typeref:typename:std::string
-parseList	include/fileParser.h	/^        bool parseList(std::string s, std::string dels, int numberElements, int *array){$/;"	f	class:Parser	typeref:typename:bool
-parseParam	include/argParser.h	/^std::pair<std::string, std::string> parseParam(std::string rawParam) {$/;"	f	typeref:typename:std::pair<std::string,std::string>
-pb	include/PBLowerBound.h	/^        numType pb(edgeListType edges,  maskType &visited,  maskType &chosen, \\$/;"	f	class:PBLowerBound	typeref:typename:numType
-pblb	include/LPLowerBound.h	/^        PBLowerBound* pblb;$/;"	m	class:LPLowerBound	typeref:typename:PBLowerBound *
-pblb	include/branchBound.h	/^        PBLowerBound* pblb;$/;"	m	class:BBoundAlgorithm	typeref:typename:PBLowerBound *
-piParameters	include/LPLowerBound.h	/^        numType *piParameters;$/;"	m	class:LPLowerBound	typeref:typename:numType *
-piParameters	include/branchBound.h	/^        numType *piParameters;$/;"	m	class:BBoundAlgorithm	typeref:typename:numType *
-placed	include/backtrack.h	/^        std::vector<int> placed;                \/\/!< Arestas do backtrack$/;"	m	class:BacktrackAlgorithm	typeref:typename:std::vector<int>
-poll	include/RandomPoll.h	/^    int poll(){$/;"	f	class:RandomPoll	typeref:typename:int
-prepareProbs	include/RandomPoll.h	/^    void prepareProbs(){$/;"	f	class:RandomPoll	typeref:typename:void
-prepareUFind	include/branchBound.h	/^        void prepareUFind(State & state, UnionFindNRB *ufind){$/;"	f	class:BBoundAlgorithm	typeref:typename:void
-probs	include/RandomPoll.h	/^    vector<double> probs;$/;"	m	class:RandomPoll	typeref:typename:vector<double>
-project	Makefile	/^project: $(OBJECTS) $(HEADERS) | $(BINDIR)$/;"	t
-q	README.md	/^# q$/;"	c
-quadCosts	include/edge.h	/^    std::vector<int> quadCosts; \/\/ vector with quadratic costs (change to array?)$/;"	m	class:Edge	typeref:typename:std::vector<int>
-rb_parent	include/unionFind.h	/^        std::stack<std::pair<int,int>> rb_parent, rb_size;$/;"	m	class:UnionFind	typeref:typename:std::stack<std::pair<int,int>>
-rb_size	include/unionFind.h	/^        std::stack<std::pair<int,int>> rb_parent, rb_size;$/;"	m	class:UnionFind	typeref:typename:std::stack<std::pair<int,int>>
-removeEdge	include/forest.h	/^        void removeEdge(int i){$/;"	f	class:Forest	typeref:typename:void
-removeEdge	include/pathRelinking.h	/^        void removeEdge(std::list<Edge> edges) {$/;"	f	class:PathRelinking	typeref:typename:void
-reset	include/unionFind.h	/^        void reset() {$/;"	f	class:UnionFindNRB	typeref:typename:void
-result_type	include/fileParser.h	/^        typedef std::size_t result_type;$/;"	t	struct:std::hash	typeref:typename:std::size_t
-rollback	include/unionFind.h	/^        void rollback(){$/;"	f	class:UnionFind	typeref:typename:void
-rootTree	include/forest.h	/^        void rootTree(int x){$/;"	f	class:Forest	typeref:typename:void
-run	include/tabuSearch.h	/^    void run(){$/;"	f	class:TabuSearch	typeref:typename:void
-sizes	include/unionFind.h	/^        int *sizes;$/;"	m	class:UnionFind	typeref:typename:int *
-sizes	include/unionFind.h	/^        int *sizes;$/;"	m	class:UnionFindNRB	typeref:typename:int *
-skew	include/RandomPoll.h	/^    void skew(){$/;"	f	class:RandomPoll	typeref:typename:void
-skewFactor	include/RandomPoll.h	/^    double skewFactor;$/;"	m	class:RandomPoll	typeref:typename:double
-skewFactorEdges	include/tabuSearch.h	/^    double skewFactorEdges;$/;"	m	class:TabuSearch	typeref:typename:double
-skewValue	include/SolutionsPoller.h	/^        double skewValue;$/;"	m	class:SolutionsPoller	typeref:typename:double
-solutionsPoller	include/tabuSearch.h	/^    SolutionsPoller solutionsPoller;$/;"	m	class:TabuSearch	typeref:typename:SolutionsPoller
+numberOfEdges	include/pathRelinking.h	/^            int numberOfEdges;$/;"	m	class:ParticleSwarm::Graph
+numberOfVertices	include/pathRelinking.h	/^            int numberOfVertices;$/;"	m	class:ParticleSwarm::Graph
+operator <	include/branchBound.h	/^bool operator <(const State & a, const State & b){$/;"	f
+operator <	include/edge.h	/^    bool operator<(const Edge& e) const {$/;"	f	class:Edge
+operator <	include/pathRelinking.h	/^            friend bool operator<(const Graph &one, const Graph &another) {$/;"	f	class:ParticleSwarm::Graph
+operator ==	include/edge.h	/^    bool operator==(const Edge& e) const {$/;"	f	class:Edge
+originalGraph	include/pathRelinking.h	/^            Graph originalGraph; $/;"	m	class:ParticleSwarm::PathRelinking
+originalGraph	include/pathRelinking.h	/^            Graph originalGraph;$/;"	m	class:ParticleSwarm::ParticleSwarm
+parent	include/kruskal.cpp	/^int parent[MAXN]; \/\/ vetor com pais do union find$/;"	v
+parent	include/pathRelinking.h	/^        int parent;  $/;"	m	class:ParticleSwarm::subset
+parents	include/unionFind.h	/^        int *parents;$/;"	m	class:UnionFind
+parents	include/unionFind.h	/^        int *parents;$/;"	m	class:UnionFindNRB
+parse	include/fileParser.h	/^        bool parse(){$/;"	f	class:Parser
+parseFilename	include/argParser.h	/^std::string parseFilename(int argc, char **argv) {$/;"	f
+parseList	include/fileParser.h	/^        bool parseList(std::string s, std::string dels, int numberElements, int *array){$/;"	f	class:Parser
+parseParam	include/argParser.h	/^std::pair<std::string, std::string> parseParam(std::string rawParam) {$/;"	f
+pb	include/PBLowerBound.h	/^        numType pb(edgeListType edges,  maskType &visited,  maskType &chosen, \\$/;"	f	class:PBLowerBound
+pblb	include/LPLowerBound.h	/^        PBLowerBound* pblb;$/;"	m	class:LPLowerBound
+pblb	include/branchBound.h	/^        PBLowerBound* pblb;$/;"	m	class:BBoundAlgorithm
+piParameters	include/LPLowerBound.h	/^        numType *piParameters;$/;"	m	class:LPLowerBound
+piParameters	include/branchBound.h	/^        numType *piParameters;$/;"	m	class:BBoundAlgorithm
+placed	include/backtrack.h	/^        std::vector<int> placed;                \/\/!< Arestas do backtrack$/;"	m	class:BacktrackAlgorithm
+poll	include/RandomPoll.h	/^    int poll(){$/;"	f	class:RandomPoll
+prepareProbs	include/RandomPoll.h	/^    void prepareProbs(){$/;"	f	class:RandomPoll
+prepareUFind	include/branchBound.h	/^        void prepareUFind(State & state, UnionFindNRB *ufind){$/;"	f	class:BBoundAlgorithm
+print	include/pathRelinking.h	/^            std::string print() {$/;"	f	class:ParticleSwarm::Graph
+print	include/pathRelinking.h	/^        std::string print() {$/;"	f	struct:ParticleSwarm::Edge_s
+printCurrentKruskalOrder	include/pathRelinking.h	/^            std::string printCurrentKruskalOrder() {$/;"	f	class:ParticleSwarm::ParticleSwarm
+probs	include/RandomPoll.h	/^    vector<double> probs;$/;"	m	class:RandomPoll
+quadCosts	include/edge.h	/^    std::vector<int> quadCosts; \/\/ vector with quadratic costs (change to array?)$/;"	m	class:Edge
+quadraticCosts	include/pathRelinking.h	/^            std::vector<QuadraticCost> quadraticCosts;$/;"	m	class:ParticleSwarm::Graph
+rank	include/pathRelinking.h	/^        int rank;  $/;"	m	class:ParticleSwarm::subset
+rb_parent	include/unionFind.h	/^        std::stack<std::pair<int,int>> rb_parent, rb_size;$/;"	m	class:UnionFind
+rb_size	include/unionFind.h	/^        std::stack<std::pair<int,int>> rb_parent, rb_size;$/;"	m	class:UnionFind
+relink	include/pathRelinking.h	/^            std::list<Graph> relink(int numberOfRelinks) {}$/;"	f	class:ParticleSwarm::PathRelinking
+removeEdge	include/forest.h	/^        void removeEdge(int i){$/;"	f	class:Forest
+removeEdge	include/pathRelinking.h	/^            void removeEdge(std::list<Edge> edges) {$/;"	f	class:ParticleSwarm::PathRelinking
+reset	include/unionFind.h	/^        void reset() {$/;"	f	class:UnionFindNRB
+result_type	include/fileParser.h	/^        typedef std::size_t result_type;$/;"	t	struct:std::hash
+rollback	include/unionFind.h	/^        void rollback(){$/;"	f	class:UnionFind
+rootTree	include/forest.h	/^        void rootTree(int x){$/;"	f	class:Forest
+run	include/tabuSearch.h	/^    void run(){$/;"	f	class:TabuSearch
+size	include/kruskal.cpp	/^int size[MAXN]; \/\/ vetor com tamanhos do union find$/;"	v
+sizes	include/unionFind.h	/^        int *sizes;$/;"	m	class:UnionFind
+sizes	include/unionFind.h	/^        int *sizes;$/;"	m	class:UnionFindNRB
+skew	include/RandomPoll.h	/^    void skew(){$/;"	f	class:RandomPoll
+skewFactor	include/RandomPoll.h	/^    double skewFactor;$/;"	m	class:RandomPoll
+skewFactorEdges	include/tabuSearch.h	/^    double skewFactorEdges;$/;"	m	class:TabuSearch
+skewValue	include/SolutionsPoller.h	/^        double skewValue;$/;"	m	class:SolutionsPoller
+solutionsPoller	include/tabuSearch.h	/^    SolutionsPoller solutionsPoller;$/;"	m	class:TabuSearch
 std	include/fileParser.h	/^namespace std$/;"	n
-steps	include/backtrack.h	/^        int steps(){$/;"	f	class:BacktrackAlgorithm	typeref:typename:int
-steps	include/branchBound.h	/^        int steps(){$/;"	f	class:BBoundAlgorithm	typeref:typename:int
-targetTree	include/pathRelinking.h	/^        Tree targetTree;$/;"	m	class:PathRelinking	typeref:typename:Tree
-totLoops	include/tabuSearch.h	/^    int totLoops;$/;"	m	class:TabuSearch	typeref:typename:int
-u	include/edge.h	/^    int u, v; \/\/ edge endpoints$/;"	m	class:Edge	typeref:typename:int
-ufind	include/backtrack.h	/^        UnionFind *ufind;                       \/\/!< Union find$/;"	m	class:BacktrackAlgorithm	typeref:typename:UnionFind *
-v	include/edge.h	/^    int u, v; \/\/ edge endpoints$/;"	m	class:Edge	typeref:typename:int
-visited	include/branchBound.h	/^    maskType visited, chosen;$/;"	m	struct:State	typeref:typename:maskType
+steps	include/backtrack.h	/^        int steps(){$/;"	f	class:BacktrackAlgorithm
+steps	include/branchBound.h	/^        int steps(){$/;"	f	class:BBoundAlgorithm
+subset	include/pathRelinking.h	/^    class subset  $/;"	c	namespace:ParticleSwarm
+targetGraph	include/pathRelinking.h	/^            Graph targetGraph;$/;"	m	class:ParticleSwarm::PathRelinking
+totLoops	include/tabuSearch.h	/^    int totLoops;$/;"	m	class:TabuSearch
+treeEdge	include/defines.h	/^typedef std::pair<int, int> treeEdge;$/;"	t
+trees	include/pathRelinking.h	/^            std::set<Graph> trees;$/;"	m	class:ParticleSwarm::ParticleSwarm
+u	include/edge.h	/^    int u, v; \/\/ edge endpoints$/;"	m	class:Edge
+ufind	include/backtrack.h	/^        UnionFind *ufind;                       \/\/!< Union find$/;"	m	class:BacktrackAlgorithm
+updateNumbers	include/pathRelinking.h	/^            void updateNumbers() {$/;"	f	class:ParticleSwarm::Graph
+v	include/edge.h	/^    int u, v; \/\/ edge endpoints$/;"	m	class:Edge
+v1	include/pathRelinking.h	/^        Vertice v1; Vertice v2;$/;"	m	struct:ParticleSwarm::Edge_s
+v2	include/pathRelinking.h	/^        Vertice v1; Vertice v2;$/;"	m	struct:ParticleSwarm::Edge_s
+visited	include/branchBound.h	/^    maskType visited, chosen;$/;"	m	struct:State
 ~BBoundAlgorithm	include/branchBound.h	/^        ~BBoundAlgorithm(){$/;"	f	class:BBoundAlgorithm
 ~BacktrackAlgorithm	include/backtrack.h	/^        ~BacktrackAlgorithm(){$/;"	f	class:BacktrackAlgorithm
 ~LPLowerBound	include/LPLowerBound.h	/^        ~LPLowerBound(){$/;"	f	class:LPLowerBound

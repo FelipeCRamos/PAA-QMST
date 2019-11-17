@@ -1,9 +1,7 @@
 #ifndef _PATH_RELINLING_H
 #define _PATH_RELINLING_H
 
-// maybe i need those
-#include <vector>
-#include <list>
+// maybe i need those #include <vector> #include <list>
 #include <algorithm>
 #include <sstream>
 #include <set>
@@ -26,8 +24,7 @@ namespace ParticleSwarm {
     typedef int Vertice;
 
     typedef struct Edge_s {
-        Vertice v1;
-        Vertice v2;
+        Vertice v1; Vertice v2;
         int cost;
 
         Edge_s() { v1 = 0; v2 = 0; cost = 0; }
@@ -107,6 +104,7 @@ namespace ParticleSwarm {
             void updateNumbers() {
                 this->numberOfEdges = getNumberOfEdges();
                 this->numberOfVertices = getNumberOfVertices();
+                this->cost = getCost();
             }
 
             int getNumberOfVertices() {
@@ -120,6 +118,14 @@ namespace ParticleSwarm {
 
             int getNumberOfEdges() {
                 return this->edges.size();
+            }
+
+            int getCost() {
+                int costSum = 0;
+                // IS WRONG< FIX THIS!! TODO (TEMPORARY WORKAROUND)
+                for(auto &edge : this->edges) { costSum += edge.cost; }
+
+                return costSum;
             }
 
             bool hasEdge(Vertice one, Vertice two) {
@@ -161,24 +167,54 @@ namespace ParticleSwarm {
             }
 
             // Get a list of `numberOfRelinks` tree's in the way
-            std::list<Graph> relink(int numberOfRelinks) {}
+            Graph relink() {
+                std::cout << "[relink] ------------------------------------\n";
+                auto dif = getSimmetryDifferenceEdges();
+
+                auto originEdges = dif.first;
+                auto targetEdges = dif.second;
+                for(auto &edge : originEdges) {
+                    std::cout << "\toriginEdge: " << edge.print() << std::endl;
+                }
+
+                auto cmpFunction = [](const Edge &lhs, const Edge &rhs){
+                    return lhs.cost < rhs.cost;
+                };
+                std::sort( targetEdges.begin(), targetEdges.end(), cmpFunction);
+
+                for(auto &edge : targetEdges) {
+                    std::cout << "\ttargetEdge: " << edge.print() << std::endl;
+                }
+
+                // select one from targetEdges (the one with smaller cost)
+                // add-it to original graph
+
+                return Graph();
+            }
 
         private:
             // internal funcs
-            std::list<Edge> getSimmetryDifferenceEdges() {
-                std::list<Edge> accEdges;
+            std::pair<std::vector<Edge>, std::vector<Edge>> getSimmetryDifferenceEdges() {
+                // std::vector<Edge> accEdges;
+                std::vector<Edge> originEdges;
+                std::vector<Edge> targetEdges;
+
                 
                 // Get all edges that are not in the intersec of both tree's
                 for(auto &edge : this->originalGraph.edges) {
-                    if( !this->targetGraph.hasEdge(edge.v1, edge.v2) ) { accEdges.push_back(edge); }
+                    if( !this->targetGraph.hasEdge(edge.v1, edge.v2) ) {
+                        originEdges.push_back(edge);
+                    }
                 }
 
                 for(auto &edge : this->targetGraph.edges) {
-                    if( !this->originalGraph.hasEdge(edge.v1, edge.v2) ) { accEdges.push_back(edge); }
+                    if( !this->originalGraph.hasEdge(edge.v1, edge.v2) ) {
+                        targetEdges.push_back(edge);
+                    }
                 }
 
                 // and return them
-                return accEdges;
+                return std::make_pair(originEdges, targetEdges);
             }
 
             std::list<Edge> _getPath(Vertice actual, Vertice destiny, std::vector<bool> &visited) {
@@ -223,21 +259,28 @@ namespace ParticleSwarm {
       
         return subsets[i].parent;  
     }  
-      
+
+    int find(std::vector<subset> &subsets, int i) {
+        if (subsets[i].parent != i)  
+            subsets[i].parent = find(subsets, subsets[i].parent);  
+
+        return subsets[i].parent;  
+    }
+
     // A function that does union of two sets of x and y  
     // (uses union by rank)  
     void Union(subset subsets[], int x, int y)  
     {  
         int xroot = find(subsets, x);  
         int yroot = find(subsets, y);  
-      
+
         // Attach smaller rank tree under root of high  
         // rank tree (Union by Rank)  
         if (subsets[xroot].rank < subsets[yroot].rank)  
             subsets[xroot].parent = yroot;  
         else if (subsets[xroot].rank > subsets[yroot].rank)  
             subsets[yroot].parent = xroot;  
-      
+
         // If ranks are same, then make one as root and  
         // increment its rank by one  
         else
@@ -246,7 +289,28 @@ namespace ParticleSwarm {
             subsets[xroot].rank++;  
         }  
     }  
-      
+
+    void Union(std::vector<subset> &subsets, int x, int y) {
+        int xroot = find(subsets, x);
+        int yroot = find(subsets, y);
+
+
+        // Attach smaller rank tree under root of high  
+        // rank tree (Union by Rank)  
+        if (subsets[xroot].rank < subsets[yroot].rank)  
+            subsets[xroot].parent = yroot;  
+        else if (subsets[xroot].rank > subsets[yroot].rank)  
+            subsets[yroot].parent = xroot;  
+
+        // If ranks are same, then make one as root and  
+        // increment its rank by one  
+        else
+        {  
+            subsets[yroot].parent = xroot;  
+            subsets[xroot].rank++;  
+        }
+    }
+
     // Compare two edges according to their weights.  
     // Used in qsort() for sorting an array of edges  
     int myComp(const void* a, const void* b)  
@@ -255,17 +319,17 @@ namespace ParticleSwarm {
         Edge* b1 = (Edge*)b;  
         return a1->cost > b1->cost;  
     }
-/*}}}*/
+    /*}}}*/
     /* eof */
 
     class ParticleSwarm{
         private:
             Graph originalGraph;
             std::vector<int> edgeOrder;
-            std::set<Graph> trees;
+            std::vector<Graph> trees;
 
         public:
-            ParticleSwarm(Graph originalGraph) {
+            ParticleSwarm(Graph originalGraph, int numberOfParticles = 10) {
                 this->originalGraph = originalGraph;
 
                 // generate initial order
@@ -274,11 +338,47 @@ namespace ParticleSwarm {
                 }
 
                 std::cout << "[particleSwarm] Original graph stored!\n";
-                std::cout << "[particleSwarm] Current Order:" << std::endl;
-                std::cout << printCurrentKruskalOrder() << std::endl;
+                // std::cout << "[particleSwarm] Current Order:" << std::endl;
+                // std::cout << printCurrentKruskalOrder() << std::endl;
 
                 // Generate the initial set of spanning trees
+                for(int i = 0; i < numberOfParticles; i++) {
+                    auto tree = generateKruskal();
+                    this->trees.push_back(tree);
+                }
+
+                std::cout << "[ParticleSwarm] Generated " << trees.size() 
+                    << " initial trees." << std::endl;
                 // and then wait to run the algorithm
+            }
+
+            void advanceGeneration() {
+                auto compareFunc = [](Graph &one, Graph &another){
+                    return one.cost < another.cost;
+                };
+
+                std::sort(this->trees.begin(), this->trees.end(), compareFunc);
+                std::cout << "[advanceGeneration] Sorting done!" << std::endl;
+
+                std::cout << "Sorted trees: [ ";
+                int i = 0;
+                for( auto &tree : this->trees ) {
+                    std::cout << tree.cost << " ";
+                    if( i++ > 30 ) { std::cout << "... "; break; }
+                }
+                std::cout << "]\n";
+
+                // make every particle walk towards the global best
+                auto globalBestCost = trees[0].cost;
+
+                // path relink between all <-> best tree
+                for(auto &tree : this->trees) {
+                    auto relink = PathRelinking(tree, trees[0]);
+                    auto relinkedTree = relink.relink();
+                    // std::cout << "Cost of relinked tree: " << relinkedTree.cost
+                        // << std::endl;
+                }
+
             }
 
             void getNextOrderPermutation() {
@@ -296,25 +396,23 @@ namespace ParticleSwarm {
                 return ss.str();
             }
 
-/*{{{*/
-            /* TRY GFG
             Graph generateKruskal() {
-                // this->getNextOrderPermutation();
+                this->getNextOrderPermutation();
+
                 Graph genTree = Graph();
                 genTree.numberOfVertices = this->originalGraph.numberOfVertices;
                 genTree.numberOfEdges = this->originalGraph.numberOfEdges;
 
                 int e = 0, i = 0; // index variables
-                subset *subsets = new subset[(genTree.numberOfVertices * sizeof(subset))];
+                // subset *subsets = new subset[(genTree.numberOfVertices * sizeof(subset))];
+                std::vector<subset> subsets(genTree.numberOfVertices + 2);
 
                 for(int v = 0; v < genTree.numberOfVertices - 1; v++) {
                     subsets[v].parent = v;
                     subsets[v].rank = 0;
                 }
-                
-                int whileCounter = 0;
+
                 while( e < genTree.numberOfVertices && i < genTree.numberOfEdges) {
-                    // std::cout << "Entered on while() loop " << whileCounter++ << " times.\n";
                     auto nextEdgeNumber = this->edgeOrder[i];
                     i += 1;
                     // std::cout << "Next edge of the list: " << nextEdgeNumber << std::endl;
@@ -325,57 +423,31 @@ namespace ParticleSwarm {
                     int y = find(subsets, nextEdge.v2);
 
                     if(x != y) {
-                        // result[e++] = nextEdge;
                         e++;
                         genTree.edges.push_back(nextEdge);
+                        // std::cout << subsets.capacity() << std::endl;
                         Union(subsets, x, y);
                     }
-                    // else {
-                        // std::cout << "x == y on edge: " << nextEdge.print() << std::endl;
-                    // }
                 }
 
                 genTree.updateNumbers();
 
-                // std::cout << "result: " << std::endl;
-                // std::cout << genTree.print() << std::endl;
-                delete[] subsets;
+                // delete[] subsets;
                 return genTree;
+            }
+
+            /*
+               Graph generateKruskal() {
+               Graph genTree = Graph();
+
+               genTree.numberOfVertices = this->originalGraph.numberOfVertices;
+               genTree.numberOfEdges = this->originalGraph.numberOfEdges;
+
+            // Create spanning tree here // TODO PAULO
+
+            return genTree;
             }
             */
-            /*}}}*/
-
-            Graph generateKruskal() {
-                Graph genTree = Graph();
-
-                genTree.numberOfVertices = this->originalGraph.numberOfVertices;
-                genTree.numberOfEdges = this->originalGraph.numberOfEdges;
-
-                // Create spanning tree here // TODO PAULO
-
-                return genTree;
-                // TEMPORARY WORKAROUND
-                bool success = false;
-                while(!success) {
-                    // auto seed = std::chrono::system_clock::now().time_since_epoch().count();
-                    // shuffle(edgeOrder.begin(), edgeOrder.end(), std::default_random_engine(seed));
-                    this->getNextOrderPermutation();
-                    // for( auto &it : edgeOrder ) { std::cout << it << ", "; } std::cout << std::endl;
-
-                    // std::cout << "originalGraph.numberOfVertices() : " << originalGraph.numberOfVertices << std::endl;
-                    for(int i = 0; i < originalGraph.numberOfVertices - 1; i++) {
-                        genTree.edges.push_back(this->originalGraph.edges[edgeOrder[i++]]);
-                    }
-
-                    if(genTree.getNumberOfEdges() != this->originalGraph.numberOfVertices - 1) {
-                        success = false;
-                    } else {
-                        success = true;
-                        genTree.updateNumbers();
-                    }
-                }
-                return genTree;
-            }
     };
 }
 
