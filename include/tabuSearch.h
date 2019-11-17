@@ -16,6 +16,10 @@ struct TabuSearchParameters{
 
 class TabuSearch{
 private:
+    std::random_device rd;
+    std::mt19937 mt;
+    std::uniform_int_distribution<> dist;
+
     //
     int N, M;
     std::vector<Edge> availableEdges;
@@ -83,6 +87,9 @@ public:
         tabuTenureMin = tsp.tabuTenureMin;
         tabuTenureMax = tsp.tabuTenureMax;
         availableEdges = allEdges;
+
+        mt = std::mt19937(rd());
+        dist = std::uniform_int_distribution<>(1, M);
     }
 
 
@@ -155,7 +162,7 @@ public:
             // get an already visited solution from poller
             forest = solutionsPoller.getSolution();
             // choose (uniformly) how many edges will be removed
-            int remEdges = (rand() % (N-1)) + 1;
+            int remEdges = (((int)dist(mt)) % (N-1)) + 1;
 
             // desctruct than construct
             // printf("=================== STRATEGIC OSCILLATION (%d)===================\n", remEdges);
