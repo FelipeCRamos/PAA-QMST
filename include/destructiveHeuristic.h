@@ -3,23 +3,30 @@
 
 #include "edge.h"
 #include "forest.h"
+#include "RandomPoll.h"
 
 class DestructiveHeuristic{
+public:
+    double skewFactor;
 
-    DestructiveHeuristic(){}
+    DestructiveHeuristic(double sf){skewFactor = sf;}
 
-    void desctruct(Forest &forest, int numRemovals){
+    void destruct(Forest &forest, int numRemovals, std::vector<Edge> &availableEdges){
         while(numRemovals--){
-            vector<costType> costs = forest.costs;
-            for(auto &e : edgeList) costs[e] = 0;
-            for(auto &cost : costs){
-                if(cost != 0) cost = 1 / cost;
+
+            std::vector<double> costs;
+            std::vector<edgeId> ids;
+            for(auto &e : forest.edgeList){
+                costs.push_back((double)(forest.costs[e] + availableEdges[e].linearCost));
+                costs.back() = 1 / costs.back();
+                ids.push_back(e);
             }
 
-            RandomPoll rp(cost);
+
+            RandomPoll rp(costs, skewFactor);
             rp.prepareProbs();
             int chosenIndex = rp.poll();
-            forest.removeEdge(costs[chosenIndex]);
+            forest.removeEdge(ids[chosenIndex], availableEdges);
         }
     }
 

@@ -4,6 +4,7 @@
 #include <vector>
 
 class Edge{
+public:
     int u, v; // edge endpoints
     int linearCost; // linear cost of the edge
     std::vector<int> quadCosts; // vector with quadratic costs (change to array?)

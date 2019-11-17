@@ -1,8 +1,18 @@
-class RandomPoll{
-    vector<double> probs;
-    double skewFactor;
+#ifndef _RANDOMPOLL_H_
+#define _RANDOMPOLL_H_
 
-    RandomPoll(vector<double> v, double sf){probs = v; skewFactor = sf;}
+#include <math.h>
+#include <random>
+#include <iostream>
+
+class RandomPoll{
+private:
+    std::vector<double> probs;
+    double skewFactor;
+    bool null;
+    std::random_device rd;
+    std::mt19937 mt;
+    std::uniform_real_distribution<double> dist;
 
     void skew(){
         double totCost = 0;
@@ -15,20 +25,45 @@ class RandomPoll{
             probs[i] /= totCost;
     }
 
-    void intoProb(){
+    double intoProb(){
         // turning into a probability
         double totCost = 0;
-        for(auto &x : v) totCost += x;
-        for(int i = 0; i < v.size(); ++i) v[i] /= totCost;
+        for(auto &x : probs) totCost += x;
+
+        if(totCost != 0){
+            for(int i = 0; i < probs.size(); ++i)
+                probs[i] /= totCost;
+        }
+        return totCost;
+    }
+
+public:
+    RandomPoll(std::vector<double> v, double sf){
+        probs = v; skewFactor = sf;
+        mt = std::mt19937(rd());
+        dist = std::uniform_real_distribution<double>(0.0, 1.0);
+    }
+
+    RandomPoll(std::vector<int> v, double sf){
+        for(auto &x : v) probs.push_back((double) x);
+        skewFactor = sf;
     }
 
     void prepareProbs(){
-        intoProb();
-        skew();
+        double totCost = intoProb();
+        if(totCost != 0) skew();
+        null = (totCost == 0);
     }
 
     int poll(){
-        double flip = ((double) rand() / (RAND_MAX)) + 1;
+        double flip = dist(mt);
+
+        // printf(">> %lf\n", flip);
+        //
+        // for(int i = 0; i < probs.size(); ++i){
+        //     printf("%lf ", probs[i]);
+        // }
+        // printf("\n");
 
         double acc = 0;
         for(int i = 0; i < probs.size(); ++i){
@@ -38,4 +73,6 @@ class RandomPoll{
 
         return probs.size() - 1;
     }
-}
+};
+
+#endif

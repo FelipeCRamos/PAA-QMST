@@ -4,37 +4,63 @@
 #include "edge.h"
 #include "forest.h"
 #include "unionFind.h"
+#include "RandomPoll.h"
 
 class ConstructiveHeuristic{
 private:
-    void build(Forest &forest, UnionFind &uf){
+    double skewFactor;
+
+    void build(Forest &forest, UnionFindNRB &uf, std::vector<Edge> &availableEdges){
         for(auto &e : forest.edgeList){
-            vertexId u = forest.avaibleEdges[e].u;
-            vertexId v = forest.avaibleEdges[e].v;
+            vertexId u = availableEdges[e].u;
+            vertexId v = availableEdges[e].v;
             uf.join(u, v);
         }
     }
 
 public:
 
-    ConstructiveHeuristic(){}
+    ConstructiveHeuristic(double sf){skewFactor = sf;}
 
-    void construct(Forest &forest){
-        UnionFind uf;
+    void construct(Forest &forest, std::vector<Edge> &availableEdges){
+        UnionFindNRB uf(forest.N + 1);
 
-        build(forest, uf); // union find building
+        build(forest, uf, availableEdges); // union find building
+
 
         while(!forest.isSolution()){
-            vector<costType> costs = forest.costs;
-            for(auto &e : edgeList) costs[e] = 0;
-            for(auto &cost : costs){
-                if(cost != 0) cost = 1 / cost;
+            // if(forest.edgeList.empty()){
+            //     int chosenIndex = rand() % forest.M;
+            //     uf.join(availableEdges[chosenIndex].u, availableEdges[chosenIndex].v);
+            //     forest.addEdge(chosenIndex, availableEdges);
+            // }else{
+            std::vector<double> costs(forest.M, 0);
+
+            for(int i = 0; i < forest.M; ++i){
+                if(!forest.edgeList.count(i)){
+                    costs[i] = (double) (forest.costs[i] + availableEdges[i].linearCost);
+                    costs[i] = 1 / costs[i];
+                }
             }
 
-            RandomPoll rp(cost);
+            // printf("----------\n");
+            // for(auto & c: costs) printf("%lf ", c);
+            // printf("\n----------\n");
+
+            RandomPoll rp(costs, skewFactor);
             rp.prepareProbs();
-            int chosenIndex = rp.poll();
-            forest.addEdge(costs[chosenIndex]);
+            while(true){
+                int chosenIndex = rp.poll();
+                // printf("%d\n", chosenIndex);
+                int u = availableEdges[chosenIndex].u;
+                int v = availableEdges[chosenIndex].v;
+                if(uf.find(availableEdges[chosenIndex].u) != uf.find(availableEdges[chosenIndex].v)){
+                    uf.join(availableEdges[chosenIndex].u, availableEdges[chosenIndex].v);
+                    forest.addEdge(chosenIndex, availableEdges);
+                    break;
+                }
+            }
+            // }
         }
     }
 
