@@ -217,37 +217,36 @@ namespace ParticleSwarm {
                 return std::make_pair(originEdges, targetEdges);
             }
 
-            std::list<Edge> _getPath(Vertice actual, Vertice destiny, std::vector<bool> &visited) {
+            std::vector<Edge> _getPath(Vertice actual, Vertice destiny, std::vector<bool> &visited) {
                 // get adjacent vertices
                 // recurse into them
             }
 
-            std::list<Edge> getPath(Vertice source, Vertice destiny) {
+            std::vector<Edge> getPath(Vertice source, Vertice destiny) {
                 // Get all edges of the path from source to destiny
                 int numberOfEdges = 0; // stub
                 std::vector<bool> visitedEdges(numberOfEdges, false);
 
-                std::list<Edge> currentPath = _getPath(source, destiny, visitedEdges);
                 // and return them
-                return std::list<Edge>();   // stub
+                return _getPath(source, destiny, visitedEdges);
             }
 
-            void removeEdge(std::list<Edge> edges) {
+            void removeEdge(std::vector<Edge> edges) {
                 // remove ONE (or maybe more) edge(s) from the tree based on some
                 // criteria
             }
     };
 
     /* Things used on ParticleSwarm in GFG */
-/*{{{*/
+    /*{{{*/
     // A structure to represent a subset for union-find  
     class subset  
     {  
         public: 
-        int parent;  
-        int rank;  
+            int parent;  
+            int rank;  
     };  
-      
+
     // A utility function to find set of an element i  
     // (uses path compression technique)  
     int find(subset subsets[], int i)  
@@ -256,7 +255,7 @@ namespace ParticleSwarm {
         // (path compression)  
         if (subsets[i].parent != i)  
             subsets[i].parent = find(subsets, subsets[i].parent);  
-      
+
         return subsets[i].parent;  
     }  
 
@@ -376,7 +375,7 @@ namespace ParticleSwarm {
                     auto relink = PathRelinking(tree, trees[0]);
                     auto relinkedTree = relink.relink();
                     // std::cout << "Cost of relinked tree: " << relinkedTree.cost
-                        // << std::endl;
+                    // << std::endl;
                 }
 
             }
