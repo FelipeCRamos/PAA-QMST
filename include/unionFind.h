@@ -1,12 +1,12 @@
 #ifndef _UNION_FIND_H_
 #define _UNION_FIND_H_
+
 #include "defines.h"
 
 #include <stack>
 #include <algorithm>
 
 class UnionFind{
-
     private:
         int _n;
         int *sizes;
