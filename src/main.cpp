@@ -35,8 +35,7 @@ int main(int argc, char **argv){
 
     if ( filename.empty() ) {
         if(debug) std::cerr << error("Número incorreto de argumentos");
-        return 1;
-    }
+        return 1; }
 
     if(debug) std::cout << PTAG << "Arquivo a ser lido: '" << filename << "'..." << std::endl;
 
@@ -79,8 +78,8 @@ int main(int argc, char **argv){
     // Definitions
     const bool runBBound = false;
     const bool runBackTrack = false;
-    const bool runSwarm = false;
-    const bool runTabu = true;
+    const bool runSwarm = true;
+    const bool runTabu = false;
 
     if(runBBound) {
 /*{{{*/
@@ -145,12 +144,14 @@ int main(int argc, char **argv){
         // }
 
         ParticleSwarm::Graph originalGraph = ParticleSwarm::Graph(n, m, costs, edges);
-        // originalGraph.updateNumbers();
+
+        originalGraph.updateNumbers();
 
         printf("--------------------- PARTICLE SWARM STARTS HERE\n");
         auto particleSwarmAlgorithm = ParticleSwarm::ParticleSwarm(originalGraph);
+        return 1;
 
-        size_t generationsToAdvance = 100;
+        size_t generationsToAdvance = 1;
         for(int i = 0; i < generationsToAdvance; i++) {
             particleSwarmAlgorithm.advanceGeneration();
         }

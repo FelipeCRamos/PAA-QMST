@@ -174,10 +174,10 @@ class Forest{
             }
         }
 
-        void goToNeighbor(neighborType &neighbor, std::vector<Edge> &availableEdges){
-            edgeId removedEdge = neighbor.first, addedEdge = neighbor.second;
-            removeEdge(removedEdge, availableEdges);
-            addEdge(addedEdge, availableEdges);
+        void goToNeighbor(neighborType &neighbor, std::vector<Edge> &availableedges){
+            edgeId removededge = neighbor.first, addededge = neighbor.second;
+            removeEdge(removededge, availableedges);
+            addEdge(addededge, availableedges);
         }
 
         costType costOfNeighbor(neighborType &neighbor, std::vector<Edge> &availableEdges){
