@@ -244,15 +244,15 @@ namespace ParticleSwarm {
                 for( int i = 0; i < edgeCount; i++ ) {
                     // add linear cost
                     result += this->edges[i].cost;
-                    std::cout << "\tresult += " <<
-                        this->edges[i].cost << std::endl;
+                    // std::cout << "\tresult += " <<
+                        // this->edges[i].cost << std::endl;
 
                     // add quadratic cost
                     for( int j = 0; j < edgeCount; j++ ) {
                         int currQCost = this->quadraticCosts[i * edgeCount + j];
                         result += currQCost;
-                        printf("\t\t[%i][%i]: ",i, j);
-                        std::cout << "result += " << currQCost << std::endl; 
+                        // printf("\t\t[%i][%i]: ",i, j);
+                        // std::cout << "result += " << currQCost << std::endl;
                     }
                 }
                 return result;
@@ -512,7 +512,7 @@ namespace ParticleSwarm {
 
         public:
             // Default constructor
-            ParticleSwarm(Graph originalGraph, int numberOfParticles = 1) {
+            ParticleSwarm(Graph originalGraph, int numberOfParticles = 10) {
 /*{{{*/
                 std::cout << "[ParticleSwarm:ParticleSwarm] Entered.\n";
 
@@ -567,13 +567,15 @@ namespace ParticleSwarm {
                 std::sort(this->trees.begin(), this->trees.end(), compareFunc);
                 std::cout << "[advanceGeneration] Sorting done!" << std::endl;
 
-                std::cout << "Sorted trees: [ ";
-                int i = 0;
-                for( auto &tree : this->trees ) {
-                    std::cout << tree.quadraticCost << " ";
-                    if( i++ > 30 ) { std::cout << "... "; break; }
+                {
+                    std::cout << "Sorted trees: [ ";
+                    int i = 0;
+                    for( auto &tree : this->trees ) {
+                        std::cout << tree.quadraticCost << " ";
+                        if( i++ > 30 ) { std::cout << "... "; break; }
+                    }
+                    std::cout << "]\n";
                 }
-                std::cout << "]\n";
 
                 // make every particle walk towards the global best
                 auto globalBestCost = trees[0].quadraticCost;
@@ -581,7 +583,9 @@ namespace ParticleSwarm {
                 std::vector<Graph> nextGenerationTrees;
 
                 // path relink between all <-> best tree
+                int currTreeNumber = 0; 
                 for(auto &tree : this->trees) {
+                    std::cout << "\tUpdating tree " << currTreeNumber++ << ".\n";
                     auto relink = PathRelinking(tree, trees[0]);
                     auto relinkedTree = relink.relink();
                     relinkedTree.updateNumbers();
@@ -636,7 +640,7 @@ namespace ParticleSwarm {
 
                 // Attempt to generate tree with kruskal algorithm
                 // make room on subsets vector to hold all elements
-                std::vector<Subset> subsets(genTree.numberOfVertices);
+                std::vector<Subset> subsets(genTree.numberOfVertices * genTree.numberOfVertices);
 
                 std::cout << "\tCurrent subsets capacity: " << subsets.capacity()
                     << std::endl;
@@ -667,7 +671,7 @@ namespace ParticleSwarm {
                 }
                 
                 // Make room for all quadratic costs
-                genTree.allocQuadraticCosts(this->originalGraph.numberOfEdges);
+                genTree.allocQuadraticCosts(this->originalGraph.numberOfEdges * this->originalGraph.numberOfEdges);
 
                 // in this moment, is all zeros...
                 std::cout << "\tqCosts: [ ";

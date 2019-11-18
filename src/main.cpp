@@ -148,11 +148,10 @@ int main(int argc, char **argv){
         originalGraph.updateNumbers();
 
         printf("--------------------- PARTICLE SWARM STARTS HERE\n");
-        auto particleSwarmAlgorithm = ParticleSwarm::ParticleSwarm(originalGraph);
-        return 1;
+        auto particleSwarmAlgorithm = ParticleSwarm::ParticleSwarm(originalGraph, 10000);
 
-        size_t generationsToAdvance = 1;
-        for(int i = 0; i < generationsToAdvance; i++) {
+        for(int i = 0; i < 150; i++) {
+            std::cout << "[main] trying to advance generation\n";
             particleSwarmAlgorithm.advanceGeneration();
         }
 
