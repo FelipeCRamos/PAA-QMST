@@ -17,10 +17,10 @@
 #include "backtrack.h"
 #include "branchBound.h"
 #include "tabuSearch.h"
-#include "pathRelinking.h"
+#include "particleSwarm.h"
 
 #define PTAG "[AGMQ] "
-#define debug true
+#define debug false
 
 // typedef std::pair<int, int> treeEdge;
 
@@ -78,8 +78,8 @@ int main(int argc, char **argv){
     // Definitions
     const bool runBBound = false;
     const bool runBackTrack = false;
-    const bool runSwarm = true;
-    const bool runTabu = false;
+    const bool runSwarm = false;
+    const bool runTabu = true;
 
     if(runBBound) {
 /*{{{*/
@@ -137,45 +137,36 @@ int main(int argc, char **argv){
         std::cout << "\tNodes: " << n << std::endl;
         std::cout << "\tEdges: " << m << std::endl;
         std::cout << "\tCosts: " << std::endl;
-        // for( int aresta = 0; aresta < m; aresta++ ) {
-            // for( int outraAresta = 0; outraAresta < m; outraAresta++ ) {
-                // printf("Aresta [%i][%i] = %i\n", aresta, outraAresta, costs[aresta][outraAresta]);
-            // }
-        // }
 
-        ParticleSwarm::Graph originalGraph = ParticleSwarm::Graph(n, m, costs, edges);
+        TabuSearchParameters tsp;
+        tsp.maxItrs = 20;
+        tsp.maxItrsNoImprove = n;
+        tsp.numTopSols = n;
+        tsp.numTopNeighbors = m;
+        tsp.tabuTenureMin = 1;
+        tsp.tabuTenureMax = (n * 0.4);
+        tsp.skewFactor = 1.0;
 
-        originalGraph.updateNumbers();
+        PathRelinkingParameters prp;
+        prp.skewFactor = 1.0;
+        prp.numTopSols = n;
 
-        printf("--------------------- PARTICLE SWARM STARTS HERE\n");
-        auto particleSwarmAlgorithm = ParticleSwarm::ParticleSwarm(originalGraph);
-        return 1;
+        ParticleSwarmParameters psp;
 
-        size_t generationsToAdvance = 1;
-        for(int i = 0; i < generationsToAdvance; i++) {
-            particleSwarmAlgorithm.advanceGeneration();
-        }
+        psp.maxItrs = 10;
+        psp.numParticles = 5;
+        psp.probPRBestLocalStart = 0.05;
+        psp.probPRBestGlobalStart = 0.045;
+        psp.probLocalSearchStart = 0.95;
+        psp.tabuSearchParameters = tsp;
+        psp.pathRelinkingParameters = prp;
+        psp.skewFactorConstructiveHeuristic = 1.0;
 
-        /*
-        for( int i = 0; i < 20; i++ ) {
-            auto generatedTree = particleSwarmAlgorithm.generateKruskal();
-            // if(generatedTree.numberOfVertices == originalGraph.numberOfVertices &&
-                    // generatedTree.numberOfEdges == originalGraph.numberOfVertices-1){
-                // std::cout << "----------------------------------------\n";
-                // std::cout << generatedTree.print() << std::endl;
-            // } else {
-                // std::cout << "FAILED!" << std::endl;
-            // }
-            std::cout << "Tree #" << i << " generated! Info:\n";
-            std::cout << "\tNo. Edges: " << generatedTree.numberOfEdges;
-            std::cout << ", No. Vertices: " << generatedTree.numberOfVertices;
-            std::cout << ", Cost: " << generatedTree.cost << std::endl;
-            particleSwarmAlgorithm.getNextOrderPermutation();
-        }
-        */
+        ParticleSwarm ps(n, m, psp, allEdges);
 
-        // ParticleSwarm::PathRelinking(one, two);
-        /*}}}*/
+        ps.run();
+
+
     }
 
     return 0;

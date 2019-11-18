@@ -103,6 +103,28 @@ class Forest{
             // exit(1);
         }
 
+        void _getNeighbors(std::vector<neighborType> &neighborhood, std::vector<costType> &neighborhoodCosts, int &bestNeighborIndex, std::vector<Edge> &availableEdges, edgeId i){
+            // get cycle formed by adding current edge
+            std::vector<edgeId> cycle;
+            getCycle(cycle, availableEdges[i].v, availableEdges[i].u, availableEdges);
+
+            if(cycle.size() == 1) return; // when the edge is already on the tree
+
+            for(auto &idEdge : cycle){ // iterating through edges on formed cycle
+                neighborType neighbor = {idEdge, i}; // retriving neighbor
+                costType neighborCost = costOfNeighbor(neighbor, availableEdges); // and its cost
+
+                // adding neighbor and its cost to the lists
+                neighborhood.push_back(neighbor);
+                neighborhoodCosts.push_back(neighborCost);
+
+                // maybe updating the best visited neighbor
+                if(neighborCost < neighborhoodCosts[bestNeighborIndex]){
+                    bestNeighborIndex = neighborhood.size() - 1;
+                }
+            }
+        }
+
     public:
         std::set<edgeId> edgeList;
         std::vector<costType> costs; // vetor d
@@ -110,12 +132,13 @@ class Forest{
         vertexId currentRoot;
         std::vector<rootedTreeNode> rootedTree;
 
-        Forest(int n, int m){
+        Forest(int n, int m, std::vector<Edge> &availableEdges){
             N = n, M = m;
             costs = std::vector<costType>(M, 0);
             cost = 0;
             currentRoot = -1;
             costs = std::vector<costType>(M, 0);
+            setCostsVector(availableEdges);
         }
 
         void setCostsVector(std::vector<Edge> &availableEdges){
@@ -150,27 +173,15 @@ class Forest{
 
         void getNeighborhood(std::vector<neighborType> &neighborhood, std::vector<costType> &neighborhoodCosts, int &bestNeighborIndex, std::vector<Edge> &availableEdges){
             bestNeighborIndex = 0; // reset
-
             for(int i = 0; i < M; ++i){
-                // get cycle formed by adding current edge
-                std::vector<edgeId> cycle;
-                getCycle(cycle, availableEdges[i].v, availableEdges[i].u, availableEdges);
+                _getNeighbors(neighborhood, neighborhoodCosts, bestNeighborIndex, availableEdges, i);
+            }
+        }
 
-                if(cycle.size() == 1) continue; // when the edge is already on the tree
-
-                for(auto &idEdge : cycle){ // iterating through edges on formed cycle
-                    neighborType neighbor = {idEdge, i}; // retriving neighbor
-                    costType neighborCost = costOfNeighbor(neighbor, availableEdges); // and its cost
-
-                    // adding neighbor and its cost to the lists
-                    neighborhood.push_back(neighbor);
-                    neighborhoodCosts.push_back(neighborCost);
-
-                    // maybe updating the best visited neighbor
-                    if(neighborCost < neighborhoodCosts[bestNeighborIndex]){
-                        bestNeighborIndex = neighborhood.size() - 1;
-                    }
-                }
+        void getRestrictedNeighborhood(std::vector<neighborType> &neighborhood, std::vector<costType> &neighborhoodCosts, int &bestNeighborIndex, std::vector<Edge> &availableEdges, std::set<edgeId> &restriction){
+            bestNeighborIndex = 0; // reset
+            for(auto i : restriction){
+                _getNeighbors(neighborhood, neighborhoodCosts, bestNeighborIndex, availableEdges, i);
             }
         }
 
@@ -195,7 +206,12 @@ class Forest{
         }
 
         bool operator==(const Forest& f) const {
+            if(f.cost != cost) return false;
             return edgeList == f.edgeList;
+        }
+
+        bool operator!=(const Forest& f) const {
+            return !(operator==(f));
         }
 };
 

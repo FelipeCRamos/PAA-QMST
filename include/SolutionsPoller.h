@@ -14,6 +14,14 @@ class SolutionsPoller{
 
         SolutionsPoller(int _maxSize, double _skewFactor): maxSize(_maxSize), skewFactor(_skewFactor){}
 
+        costType getBestCost(){
+            return forestSet.begin()->cost;
+        }
+
+        Forest getBest(){
+            return *forestSet.begin();
+        }
+
         void addSolution(Forest &solution){
             forestSet.insert(solution);
 

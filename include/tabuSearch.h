@@ -6,6 +6,7 @@
 #include "forest.h"
 #include "SolutionsPoller.h"
 #include "NeighborsPoller.h"
+#include "pathRelink.h"
 
 struct TabuSearchParameters{
     iterationType maxItrs, maxItrsNoImprove;
@@ -74,6 +75,34 @@ private:
         }
     }
 
+    bool _findNeighbor(neighborType &nextNeighbor, Forest &forest, int itr){
+
+        std::vector<neighborType> neighborhood;
+        std::vector<costType> neighborhoodCosts;
+
+        // best seen neighbor
+        int bestNeighborIndex;
+
+        // retrive neighbors
+        forest.getNeighborhood(neighborhood, neighborhoodCosts, bestNeighborIndex, availableEdges);
+
+        if(neighborhoodCosts[bestNeighborIndex] < forest.cost){ // troca de best neighbor eh melhor q melhor global
+            nextNeighbor = neighborhood[bestNeighborIndex];
+        }else{
+            bool chosen = false;
+            NeighborsPoller neighborsPoller(numTopNeighbors, skewFactor);
+            for(int i = 0; i < neighborhood.size(); ++i){
+                if(!isNeighborTabu(neighborhood[i], itr)){
+                    chosen = true;
+                    neighborsPoller.add(neighborhood[i], neighborhoodCosts[i]);
+                }
+            }
+            if(!chosen) return false;
+            nextNeighbor = neighborsPoller.get();
+        }
+        return true;
+    }
+
 public:
 
     TabuSearch(int n, int m, TabuSearchParameters tsp, std::vector<Edge> &allEdges){
@@ -102,8 +131,7 @@ public:
         SolutionsPoller solutionsPoller(numTopSols, skewFactor);
 
         // tree that is going to be used for searching
-        Forest forest(N, M);
-        forest.setCostsVector(availableEdges);
+        Forest forest(N, M, availableEdges);
 
         constructiveHeuristic.construct(forest, availableEdges);
 
@@ -113,40 +141,13 @@ public:
             prepSearch(); // init tabu search parameters
             int itrsNoImprove = 0; // started counting num of iters without improving
 
+
             while(itrsNoImprove < maxItrsNoImprove && itr < maxItrs){
                 // std::cout << forest << std::endl;
                 solutionsPoller.addSolution(forest); // add forest to poller
 
-                // neighbors vector
-                std::vector<neighborType> neighborhood;
-                // neighbors costs
-                std::vector<costType> neighborhoodCosts;
-
-                // best seen neighbor and neighbor going to be chosen
                 neighborType nextNeighbor;
-                int bestNeighborIndex;
-
-                // retrive neighbors
-                forest.getNeighborhood(neighborhood, neighborhoodCosts, bestNeighborIndex, availableEdges);
-
-                // for(int i = 0; i < neighborhood.size(); ++i){
-                //     printf("sai:%d entra:%d custo:%d\n", neighborhood[i].first, neighborhood[i].second, neighborhoodCosts[i]);
-                // }
-
-                if(neighborhoodCosts[bestNeighborIndex] < forest.cost){ // troca de best neighbor eh melhor q melhor global
-                    nextNeighbor = neighborhood[bestNeighborIndex];
-                }else{
-                    bool chosen = false;
-                    NeighborsPoller neighborsPoller(numTopNeighbors, skewFactor);
-                    for(int i = 0; i < neighborhood.size(); ++i){
-                        if(!isNeighborTabu(neighborhood[i], itr)){
-                            chosen = true;
-                            neighborsPoller.add(neighborhood[i], neighborhoodCosts[i]);
-                        }
-                    }
-                    if(!chosen) break;
-                    nextNeighbor = neighborsPoller.get();
-                }
+                _findNeighbor(nextNeighbor, forest, itr);
 
                 costType lastCost = forest.cost; // retriving last cost
                 forest.goToNeighbor(nextNeighbor, availableEdges); // change solution
@@ -171,6 +172,26 @@ public:
         }
 
         std::cout << bestSolution << std::endl;
+        return bestSolution;
+    }
+
+    Forest runLocal(Forest &forest){
+        prepSearch();
+        Forest bestSolution = forest; // best seen solution
+
+        int itr = 0, itrsNoImprove = 0;
+        while(itrsNoImprove < maxItrsNoImprove && itr < maxItrs){
+
+            neighborType nextNeighbor;
+            _findNeighbor(nextNeighbor, forest, itr);
+
+            costType lastCost = forest.cost; // retriving last cost
+            printf("%d\n", lastCost);
+            forest.goToNeighbor(nextNeighbor, availableEdges); // change solution
+            updateTabu(nextNeighbor, lastCost, forest, itr, itrsNoImprove, bestSolution); // updt tabu parameters
+            maybeUpdtBest(forest, bestSolution); // maybe update best seen solution
+            itr++;
+        }
         return bestSolution;
     }
 
