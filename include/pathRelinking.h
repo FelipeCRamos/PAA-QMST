@@ -8,6 +8,8 @@
 #include <random>
 #include "forest.h"
 
+#define debugPrints false
+
 /*
     Fluxo pensado:
         -> Obtem arvore original e destino
@@ -180,7 +182,7 @@ namespace ParticleSwarm {
             // Initialize a graph with legacy args
             Graph(int numberOfVertices, int numberOfEdges, int **costs, std::vector<std::pair<int, int>> edges) {
 /*{{{*/
-                std::cout << "[Graph] Entered on legacy graph constructor.\n";
+                if(debugPrints) std::cout << "[Graph] Entered on legacy graph constructor.\n";
                 this->numberOfVertices = numberOfVertices;
                 this->numberOfEdges = numberOfEdges;    
 
@@ -202,8 +204,8 @@ namespace ParticleSwarm {
                         if(i != j) {
                             // quadratic cost between edges #i and #j
                             if(costs[i][j] < 0) { 
-                                std::cout << "\n\n\nERROR HERE:\n";
-                                printf("On edge[%i][%i] cost was %i\n", i, j, costs[i][j]);
+                                if(debugPrints) std::cout << "\n\n\nERROR HERE:\n";
+                                if(debugPrints) printf("On edge[%i][%i] cost was %i\n", i, j, costs[i][j]);
                             }
                             this->quadraticCosts[i * numberOfEdges + j] = costs[i][j];
                             // this->quadraticCosts.push_back(qCurrCost);
@@ -220,8 +222,8 @@ namespace ParticleSwarm {
 
             void allocQuadraticCosts(long int number) {
 /*{{{*/
-                std::cout << "[Graph:allocQuadraticCosts] Entered on allocQuadraticCosts.\n";
-                std::cout << "\tAllocating vector, was null.\n";
+                if(debugPrints) std::cout << "[Graph:allocQuadraticCosts] Entered on allocQuadraticCosts.\n";
+                if(debugPrints) std::cout << "\tAllocating vector, was null.\n";
                 this->quadraticCosts = std::vector<int>(number, 0);
                 for(int i = 0; i < number; i++)
                     this->quadraticCosts[i] = 0;
@@ -230,7 +232,7 @@ namespace ParticleSwarm {
 
             int getQuadraticCost() {
 /*{{{*/
-                std::cout << "[Graph:getQuadraticCost] Entered on getQuadraticCost.\n";
+                if(debugPrints) std::cout << "[Graph:getQuadraticCost] Entered on getQuadraticCost.\n";
                 int result = 0;
 
                 // failsafe
@@ -238,7 +240,7 @@ namespace ParticleSwarm {
                     allocQuadraticCosts(this->edges.size());
 
                 int edgeCount = this->edges.size();
-                std::cout << "\tEdges size: " << edgeCount
+                if(debugPrints) std::cout << "\tEdges size: " << edgeCount
                     << std::endl;
 
                 for( int i = 0; i < edgeCount; i++ ) {
@@ -262,7 +264,7 @@ namespace ParticleSwarm {
             // return -1 if a edge is not there, else return it's cost
             int getCost(Vertice one, Vertice two) {
 /*{{{*/
-                std::cout << "[getCost] Entered on getCost.\n";
+                // std::cout << "[getCost] Entered on getCost.\n";
                 for( auto &edge : this->edges ) {
                     if((edge.v1 == one && edge.v2 == two) || (edge.v2 == one && edge.v1 == two)) {
                         return edge.cost;
@@ -274,7 +276,7 @@ namespace ParticleSwarm {
 
             void updateNumbers() {
 /*{{{*/
-                std::cout << "[Graph:updateNumbers] Entered on updateNumbers.\n";
+                if(debugPrints) std::cout << "[Graph:updateNumbers] Entered on updateNumbers.\n";
                 this->numberOfEdges = getNumberOfEdges();
                 this->numberOfVertices = getNumberOfVertices();
                 this->cost = getCost();
@@ -284,7 +286,7 @@ namespace ParticleSwarm {
 
             int getNumberOfVertices() {
 /*{{{*/
-                std::cout << "[Graph:getNumberOfVertices] Entered on getNumberOfVertices.\n";
+                if(debugPrints) std::cout << "[Graph:getNumberOfVertices] Entered on getNumberOfVertices.\n";
                 std::set<int> vertices; // to remove duplicateds
                 for(auto &edge : this->edges) {
                     vertices.insert(edge.v1);
@@ -296,14 +298,14 @@ namespace ParticleSwarm {
 
             int getNumberOfEdges() {
 /*{{{*/
-                std::cout << "[Graph:getNumberOfEdges] Entered on getNumberOfEdges.\n";
+                if(debugPrints) std::cout << "[Graph:getNumberOfEdges] Entered on getNumberOfEdges.\n";
                 return this->edges.size();
 /*}}}*/
             }
 
             int getCost() {
 /*{{{*/
-                std::cout << "[Graph:getCost] Entered on getCost.\n";
+                if(debugPrints) std::cout << "[Graph:getCost] Entered on getCost.\n";
                 int costSum = 0;
                 // IS WRONG< FIX THIS!! TODO (TEMPORARY WORKAROUND)
                 for(auto &edge : this->edges) { costSum += edge.cost; }
@@ -314,15 +316,15 @@ namespace ParticleSwarm {
 
             bool hasEdge(Vertice one, Vertice two) {
 /*{{{*/
-                std::cout << "[Graph:hasEdge] Entered on hasEdge.\n";
-                return getCost(one, two) != -1;
+                // if(debugPrints) std::cout << "[Graph:hasEdge] Entered on hasEdge.\n";
+                return getCost(one, two) != 0;
 /*}}}*/
             }
 
             // Overload to make std::set<Graph> work
             friend bool operator<(const Graph &one, const Graph &another) {
 /*{{{*/
-                std::cout << "[Graph:operator<] Entered on operator<.\n";
+                if(debugPrints) std::cout << "[Graph:operator<] Entered on operator<.\n";
                 if(one.cost < another.cost) {
                     return true;
                 }
@@ -360,7 +362,7 @@ namespace ParticleSwarm {
             // Custom constructor
             PathRelinking(Graph originalGraph, Graph targetGraph) {
 /*{{{*/
-                std::cout << "[PathRelinking] Entered on PathRelinking custom constructor.\n";
+                if(debugPrints) std::cout << "[PathRelinking] Entered on PathRelinking custom constructor.\n";
                 this->originalGraph = originalGraph;
                 this->targetGraph = targetGraph;
 /*}}}*/
@@ -369,12 +371,13 @@ namespace ParticleSwarm {
             // Get the graph between the two graphs (original and target)
             Graph relink() {
                 /*{{{*/
-                std::cout << "[PathRelinking:Relink] Entered.\n";
+                if(debugPrints) std::cout << "[PathRelinking:Relink] Entered.\n";
                 // std::cout << "[relink] ------------------------------------\n";
                 auto dif = getSimmetryDifferenceEdges();
 
                 auto originEdges = dif.first;
                 auto targetEdges = dif.second;
+                // std::cout << "-----------nn--\n";
                 // for(auto &edge : originEdges) {
                     // std::cout << "\toriginEdge: " << edge.print() << std::endl;
                 // }
@@ -392,10 +395,11 @@ namespace ParticleSwarm {
                 // for(auto &edge : targetEdges) {
                     // std::cout << "\ttargetEdge: " << edge.print() << std::endl;
                 // }
+                // std::cout << "-----------nn--\n";
 
                 // select one from targetEdges (the one with smaller cost)
                 std::sort(originEdges.begin(), originEdges.end(), inverseCmpFuncion);
-                std::sort(targetEdges.begin(), targetEdges.end(), inverseCmpFuncion);
+                // std::sort(targetEdges.begin(), targetEdges.end(), inverseCmpFuncion);
 
                 if( originEdges.size() != 0 && targetEdges.size() ) {
                     // if there are some vertics
@@ -414,7 +418,7 @@ namespace ParticleSwarm {
             // Get simmetry diff between the two graphs
             std::pair<std::vector<Edge>, std::vector<Edge>> getSimmetryDifferenceEdges() {
                 /*{{{*/
-                std::cout << "[PathRelinking:getSimmetryDifferenceEdges] Entered.\n";
+                if(debugPrints) std::cout << "[PathRelinking:getSimmetryDifferenceEdges] Entered.\n";
                 // std::vector<Edge> accEdges;
                 std::vector<Edge> originEdges;
                 std::vector<Edge> targetEdges;
@@ -441,7 +445,7 @@ namespace ParticleSwarm {
             // Remove one original edge and then add a target edge
             void goToNeigh(Edge e1, Edge e2, std::vector<Edge> &edges){
                 /*{{{*/
-                std::cout << "[PathRelinking:goToNeigh] Entered.\n";
+                if(debugPrints) std::cout << "[PathRelinking:goToNeigh] Entered.\n";
                 Edge removededge = e1, addededge = e2;
                 /*
                 std::cout << "Edges before relink: [ ";
@@ -467,7 +471,7 @@ namespace ParticleSwarm {
             // Perform removal of an edge
             void removeEdge(Edge e, std::vector<Edge> &availableEdges){
 /*{{{*/
-                std::cout << "[PathRelinking:removeEdge] Entered.\n";
+                if(debugPrints) std::cout << "[PathRelinking:removeEdge] Entered.\n";
                 // currentRoot = -1;
                 // edgeList.erase(e);
                 for(
@@ -493,7 +497,7 @@ namespace ParticleSwarm {
             // Perform the addition of an edge
             void addEdge(Edge e, std::vector<Edge> &availableEdges) {
                 /*{{{*/
-                std::cout << "[PathRelinking:addEdge] Entered.\n";
+                if(debugPrints) std::cout << "[PathRelinking:addEdge] Entered.\n";
                 // std::cout << "[addEdge] Adding edge " << e.print() << std::endl;
                 availableEdges.push_back(e);
 /*}}}*/
@@ -514,7 +518,7 @@ namespace ParticleSwarm {
             // Default constructor
             ParticleSwarm(Graph originalGraph, int numberOfParticles = 10) {
 /*{{{*/
-                std::cout << "[ParticleSwarm:ParticleSwarm] Entered.\n";
+                if(debugPrints) std::cout << "[ParticleSwarm:ParticleSwarm] Entered.\n";
 
                 this->originalGraph = originalGraph;
                 // this->bestQuadraticCost = this->originalGraph.quadraticCost;
@@ -524,19 +528,19 @@ namespace ParticleSwarm {
                     this->edgeOrder.push_back(i);
                 }
 
-                std::cout << "\tOriginal graph stored!\n";
+                if(debugPrints) std::cout << "\tOriginal graph stored!\n";
 
                 // Generate the initial set of spanning trees
                 for(int i = 0; i < numberOfParticles; i++) {
                     auto tree = generateKruskal();
-                    std::cout << "\tTree has been"
+                    if(debugPrints) std::cout << "\tTree has been"
                         << " generated, updating it's values.\n";
 
                     tree.updateNumbers();
                     this->trees.push_back(tree);
                 }
 
-                std::cout << "\tGenerated " << trees.size() 
+                if(debugPrints) std::cout << "\tGenerated " << trees.size() 
                     << " initial trees." << std::endl;
                 // and then wait to run the algorithm
 /*}}}*/
@@ -557,24 +561,23 @@ namespace ParticleSwarm {
             }
 
             // Advance current particle generation
-            void advanceGeneration() {
+            int advanceGeneration() {
 /*{{{*/
-                std::cout << "[ParticleSwarm:advanceGeneration] Entered.\n";
+                if(debugPrints) std::cout << "[ParticleSwarm:advanceGeneration] Entered.\n";
                 auto compareFunc = [](Graph &one, Graph &another){
-                    return one.quadraticCost < another.quadraticCost;
+                    return one.getQuadraticCost() < another.getQuadraticCost();
                 };
 
-                std::sort(this->trees.begin(), this->trees.end(), compareFunc);
-                std::cout << "[advanceGeneration] Sorting done!" << std::endl;
-
+                // std::sort(this->trees.begin(), this->trees.end(), compareFunc);
+                if(debugPrints) std::cout << "[advanceGeneration] Sorting done!" << std::endl;
                 {
-                    std::cout << "Sorted trees: [ ";
+                    if(debugPrints) std::cout << "Sorted trees: [ ";
                     int i = 0;
                     for( auto &tree : this->trees ) {
-                        std::cout << tree.quadraticCost << " ";
-                        if( i++ > 30 ) { std::cout << "... "; break; }
+                        if(debugPrints) std::cout << tree.quadraticCost << "^" << tree.edges.size() << " ";
+                        if( i++ > 30 ) { if(debugPrints) std::cout << "... "; break; }
                     }
-                    std::cout << "]\n";
+                    if(debugPrints) std::cout << "]\n";
                 }
 
                 // make every particle walk towards the global best
@@ -585,7 +588,7 @@ namespace ParticleSwarm {
                 // path relink between all <-> best tree
                 int currTreeNumber = 0; 
                 for(auto &tree : this->trees) {
-                    std::cout << "\tUpdating tree " << currTreeNumber++ << ".\n";
+                    if(debugPrints) std::cout << "\tUpdating tree " << currTreeNumber++ << ".\n";
                     auto relink = PathRelinking(tree, trees[0]);
                     auto relinkedTree = relink.relink();
                     relinkedTree.updateNumbers();
@@ -599,24 +602,29 @@ namespace ParticleSwarm {
                     << nextGenerationTrees[0].quadraticCost << std::endl;
 
                 this->trees = std::vector<Graph>(nextGenerationTrees);
+                return nextGenerationTrees[0].quadraticCost;
 /*}}}*/
             }
 
             // Auxiliar funcion to get next permutation (used on kruskal)
             void getNextOrderPermutation() {
 /*{{{*/
-                std::cout << "[ParticleSwarm:getNextOrderPermutation] Entered.\n";
-                std::next_permutation(edgeOrder.begin(), edgeOrder.end());
+                if(debugPrints) std::cout << "[ParticleSwarm:getNextOrderPermutation] Entered.\n";
+                // std::next_permutation(edgeOrder.begin(), edgeOrder.end());
                 // std::cout << "Made permutation.\n";
-                // auto seed = std::chrono::system_clock::now().time_since_epoch().count();
-                // shuffle(edgeOrder.begin(), edgeOrder.end(), std::default_random_engine(seed));
+                auto seed = std::chrono::system_clock::now().time_since_epoch().count();
+                std::mt19937 g1 (seed);
+
+                // auto r = g1() % g2();
+                // std::cout << "new seed: " << g1() << std::endl;
+                shuffle(edgeOrder.begin(), edgeOrder.end(), std::mt19937(g1()));
 /*}}}*/
             }
 
             // Auxiliar function to print current permutation (used on kruskal)
             std::string printCurrentKruskalOrder() {
 /*{{{*/
-                std::cout << "[ParticleSwarm:printCurrentKruskalOrder] Entered.\n";
+                if(debugPrints) std::cout << "[ParticleSwarm:printCurrentKruskalOrder] Entered.\n";
                 std::stringstream ss; 
                 ss << "[ ";
                 for( auto &it : this->edgeOrder ) { ss << it << " "; }
@@ -628,8 +636,13 @@ namespace ParticleSwarm {
             // Generate one spanning tree with kruskal algorithm
             Graph generateKruskal() {
 /*{{{*/
-                std::cout << "[ParticleSwarm:generateKruskal] Entered.\n";
+                if(debugPrints) std::cout << "[ParticleSwarm:generateKruskal] Entered.\n";
                 this->getNextOrderPermutation();
+
+                // for( auto &it : edgeOrder ) {
+                    // std::cout << it << " ";
+                // }
+                // std::cout << std::endl;
 
                 // create Graph (that's a tree)
                 Graph genTree = Graph();
@@ -642,11 +655,11 @@ namespace ParticleSwarm {
                 // make room on subsets vector to hold all elements
                 std::vector<Subset> subsets(genTree.numberOfVertices * genTree.numberOfVertices);
 
-                std::cout << "\tCurrent subsets capacity: " << subsets.capacity()
+                if(debugPrints) std::cout << "\tCurrent subsets capacity: " << subsets.capacity()
                     << std::endl;
 
                 // initialize union find
-                for(int v = 0; v < genTree.numberOfVertices - 1; v++) {
+                for(int v = 0; v <= genTree.numberOfVertices; v++) {
                     subsets[v].parent = v;
                     subsets[v].rank = 0;
                 }
@@ -674,9 +687,9 @@ namespace ParticleSwarm {
                 genTree.allocQuadraticCosts(this->originalGraph.numberOfEdges * this->originalGraph.numberOfEdges);
 
                 // in this moment, is all zeros...
-                std::cout << "\tqCosts: [ ";
-                for(auto &it : genTree.quadraticCosts) std::cout << it << " ";
-                std::cout << "]\n";
+                if(debugPrints) std::cout << "\tqCosts: [ ";
+                for(auto &it : genTree.quadraticCosts) if(debugPrints) std::cout << it << " ";
+                if(debugPrints) std::cout << "]\n";
 
                 // update quadratic costs
                 for( auto &edge : genTree.edges ) {
@@ -691,15 +704,16 @@ namespace ParticleSwarm {
                     }
                 }
 
-                std::cout << "\tupdated qCosts: [ ";
-                for(auto &it : genTree.quadraticCosts) std::cout << it << " ";
-                std::cout << "]\n";
+                if(debugPrints) std::cout << "\tupdated qCosts: [ ";
+                for(auto &it : genTree.quadraticCosts) if(debugPrints) std::cout << it << " ";
+                if(debugPrints) std::cout << "]\n";
 
-                std::cout << "\tgenerated kruskal tree: [ ";
+                /*if(debugPrints)*/ std::cout << "\tgenerated kruskal tree: [ ";
                 for(auto &it : genTree.edges) {
-                    std::cout << it.print() << "^" << getEdgePosition(it) << " ";
+                    /*if(debugPrints)*/ std::cout << it.print() << "^" << getEdgePosition(it) << " ";
                 }
-                std::cout << "]\n";
+                /*if(debugPrints)*/ std::cout << "] " << genTree.edges.size() << " ";
+                std::cout << genTree.getQuadraticCost() << std::endl;
 
                 genTree.updateNumbers();
 

@@ -9,6 +9,7 @@
 #include <map>
 #include <chrono>
 #include <random>
+#include <cmath>
 
 // - Project custom libs
 #include "argParser.h"
@@ -148,11 +149,12 @@ int main(int argc, char **argv){
         originalGraph.updateNumbers();
 
         printf("--------------------- PARTICLE SWARM STARTS HERE\n");
-        auto particleSwarmAlgorithm = ParticleSwarm::ParticleSwarm(originalGraph, 10000);
+        auto particleSwarmAlgorithm = ParticleSwarm::ParticleSwarm(originalGraph, pow(10, 1));
 
-        for(int i = 0; i < 150; i++) {
-            std::cout << "[main] trying to advance generation\n";
-            particleSwarmAlgorithm.advanceGeneration();
+        for(int i = 0; i < 10; i++) {
+            std::cout << "[main] Generation " << i << std::endl;
+            auto result = particleSwarmAlgorithm.advanceGeneration();
+            std::cout << "\t\t-> Best tree: " << result << std::endl;
         }
 
         /*
