@@ -67,7 +67,7 @@ namespace ParticleSwarm {
 /*}}}*/
     } QuadraticCost;
 
-    // A structure to represent a subset for union-find  
+    // A structure to represent a subset for union-find
     typedef struct Subset_s {
 /*{{{*/
         int parent;
@@ -79,53 +79,53 @@ namespace ParticleSwarm {
     // AUXILIARY FUNCTIONS
     // ========================================================================
 
-    // A utility function to find set of an element i  
-    // (uses path compression technique)  
-    int find(Subset subsets[], int i)  
-    {  
+    // A utility function to find set of an element i
+    // (uses path compression technique)
+    int find(Subset subsets[], int i)
+    {
 /*{{{*/
-        // find root and make root as parent of i  
-        // (path compression)  
-        if (subsets[i].parent != i)  
-            subsets[i].parent = find(subsets, subsets[i].parent);  
+        // find root and make root as parent of i
+        // (path compression)
+        if (subsets[i].parent != i)
+            subsets[i].parent = find(subsets, subsets[i].parent);
 
-        return subsets[i].parent;  
-/*}}}*/
-    }  
-
-    int find(std::vector<Subset> &subsets, int i) {
-/*{{{*/
-        if (subsets[i].parent != i)  
-            subsets[i].parent = find(subsets, subsets[i].parent);  
-
-        return subsets[i].parent;  
+        return subsets[i].parent;
 /*}}}*/
     }
 
-    // A function that does union of two sets of x and y  
-    // (uses union by rank)  
-    void Union(Subset subsets[], int x, int y)  
-    {  
+    int find(std::vector<Subset> &subsets, int i) {
 /*{{{*/
-        int xroot = find(subsets, x);  
-        int yroot = find(subsets, y);  
+        if (subsets[i].parent != i)
+            subsets[i].parent = find(subsets, subsets[i].parent);
 
-        // Attach smaller rank tree under root of high  
-        // rank tree (Union by Rank)  
-        if (subsets[xroot].rank < subsets[yroot].rank)  
-            subsets[xroot].parent = yroot;  
-        else if (subsets[xroot].rank > subsets[yroot].rank)  
-            subsets[yroot].parent = xroot;  
-
-        // If ranks are same, then make one as root and  
-        // increment its rank by one  
-        else
-        {  
-            subsets[yroot].parent = xroot;  
-            subsets[xroot].rank++;  
-        }  
+        return subsets[i].parent;
 /*}}}*/
-    }  
+    }
+
+    // A function that does union of two sets of x and y
+    // (uses union by rank)
+    void Union(Subset subsets[], int x, int y)
+    {
+/*{{{*/
+        int xroot = find(subsets, x);
+        int yroot = find(subsets, y);
+
+        // Attach smaller rank tree under root of high
+        // rank tree (Union by Rank)
+        if (subsets[xroot].rank < subsets[yroot].rank)
+            subsets[xroot].parent = yroot;
+        else if (subsets[xroot].rank > subsets[yroot].rank)
+            subsets[yroot].parent = xroot;
+
+        // If ranks are same, then make one as root and
+        // increment its rank by one
+        else
+        {
+            subsets[yroot].parent = xroot;
+            subsets[xroot].rank++;
+        }
+/*}}}*/
+    }
 
     void Union(std::vector<Subset> &subsets, int x, int y) {
 /*{{{*/
@@ -133,30 +133,30 @@ namespace ParticleSwarm {
         int yroot = find(subsets, y);
 
 
-        // Attach smaller rank tree under root of high  
-        // rank tree (Union by Rank)  
-        if (subsets[xroot].rank < subsets[yroot].rank)  
-            subsets[xroot].parent = yroot;  
-        else if (subsets[xroot].rank > subsets[yroot].rank)  
-            subsets[yroot].parent = xroot;  
+        // Attach smaller rank tree under root of high
+        // rank tree (Union by Rank)
+        if (subsets[xroot].rank < subsets[yroot].rank)
+            subsets[xroot].parent = yroot;
+        else if (subsets[xroot].rank > subsets[yroot].rank)
+            subsets[yroot].parent = xroot;
 
-        // If ranks are same, then make one as root and  
-        // increment its rank by one  
+        // If ranks are same, then make one as root and
+        // increment its rank by one
         else
-        {  
-            subsets[yroot].parent = xroot;  
-            subsets[xroot].rank++;  
+        {
+            subsets[yroot].parent = xroot;
+            subsets[xroot].rank++;
         }
 /*}}}*/
     }
 
-    // Compare two edges according to their weights.  
-    // Used in qsort() for sorting an array of edges  
+    // Compare two edges according to their weights.
+    // Used in qsort() for sorting an array of edges
     int myComp(const void* a, const void* b) {
 /*{{{*/
-        Edge* a1 = (Edge*)a;  
-        Edge* b1 = (Edge*)b;  
-        return a1->cost > b1->cost;  
+        Edge* a1 = (Edge*)a;
+        Edge* b1 = (Edge*)b;
+        return a1->cost > b1->cost;
 /*}}}*/
     }
 
@@ -182,7 +182,7 @@ namespace ParticleSwarm {
 /*{{{*/
                 std::cout << "[Graph] Entered on legacy graph constructor.\n";
                 this->numberOfVertices = numberOfVertices;
-                this->numberOfEdges = numberOfEdges;    
+                this->numberOfEdges = numberOfEdges;
 
 
                 // inicialize edges
@@ -193,7 +193,7 @@ namespace ParticleSwarm {
                 }
 
                 this->quadraticCost = 0;
-                this->quadraticCosts = std::vector<int>((numberOfEdges * numberOfEdges) + 2); 
+                this->quadraticCosts = std::vector<int>((numberOfEdges * numberOfEdges) + 2);
                 for( int i = 0; i < numberOfEdges*numberOfEdges; i++ ) quadraticCosts[i] = 0;
 
                 // inicialize quadratic costs of edges
@@ -201,7 +201,7 @@ namespace ParticleSwarm {
                     for( int j = 0; j < numberOfEdges; j++ ) {
                         if(i != j) {
                             // quadratic cost between edges #i and #j
-                            if(costs[i][j] < 0) { 
+                            if(costs[i][j] < 0) {
                                 std::cout << "\n\n\nERROR HERE:\n";
                                 printf("On edge[%i][%i] cost was %i\n", i, j, costs[i][j]);
                             }
@@ -216,7 +216,7 @@ namespace ParticleSwarm {
 
                 this->quadraticCost = getQuadraticCost();
 /*}}}*/
-            } 
+            }
 
             void allocQuadraticCosts(long int number) {
 /*{{{*/
@@ -252,7 +252,7 @@ namespace ParticleSwarm {
                         int currQCost = this->quadraticCosts[i * edgeCount + j];
                         result += currQCost;
                         printf("\t\t[%i][%i]: ",i, j);
-                        std::cout << "result += " << currQCost << std::endl; 
+                        std::cout << "result += " << currQCost << std::endl;
                     }
                 }
                 return result;
@@ -350,10 +350,10 @@ namespace ParticleSwarm {
     class PathRelinking {
 /*{{{*/
         private:
-            Graph originalGraph; 
+            Graph originalGraph;
             Graph targetGraph;
         public:
-            
+
             // Default constructor
             PathRelinking() {}
 
@@ -419,7 +419,7 @@ namespace ParticleSwarm {
                 std::vector<Edge> originEdges;
                 std::vector<Edge> targetEdges;
 
-                
+
                 // Get all edges that are not in the intersec of both tree's
                 for(auto &edge : this->originalGraph.edges) {
                     if( !this->targetGraph.hasEdge(edge.v1, edge.v2) ) {
@@ -536,7 +536,7 @@ namespace ParticleSwarm {
                     this->trees.push_back(tree);
                 }
 
-                std::cout << "\tGenerated " << trees.size() 
+                std::cout << "\tGenerated " << trees.size()
                     << " initial trees." << std::endl;
                 // and then wait to run the algorithm
 /*}}}*/
@@ -613,7 +613,7 @@ namespace ParticleSwarm {
             std::string printCurrentKruskalOrder() {
 /*{{{*/
                 std::cout << "[ParticleSwarm:printCurrentKruskalOrder] Entered.\n";
-                std::stringstream ss; 
+                std::stringstream ss;
                 ss << "[ ";
                 for( auto &it : this->edgeOrder ) { ss << it << " "; }
                 ss << "]";
@@ -636,13 +636,13 @@ namespace ParticleSwarm {
 
                 // Attempt to generate tree with kruskal algorithm
                 // make room on subsets vector to hold all elements
-                std::vector<Subset> subsets(genTree.numberOfVertices);
+                std::vector<Subset> subsets(genTree.numberOfVertices + 1);
 
                 std::cout << "\tCurrent subsets capacity: " << subsets.capacity()
                     << std::endl;
 
                 // initialize union find
-                for(int v = 0; v < genTree.numberOfVertices - 1; v++) {
+                for(int v = 0; v <= genTree.numberOfVertices; v++) {
                     subsets[v].parent = v;
                     subsets[v].rank = 0;
                 }
@@ -665,7 +665,7 @@ namespace ParticleSwarm {
                         Union(subsets, x, y);
                     }
                 }
-                
+
                 // Make room for all quadratic costs
                 genTree.allocQuadraticCosts(this->originalGraph.numberOfEdges);
 
