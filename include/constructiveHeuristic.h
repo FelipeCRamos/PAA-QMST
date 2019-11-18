@@ -40,7 +40,7 @@ public:
             for(int i = 0; i < forest.M; ++i){
                 if(!forest.edgeList.count(i)){
                     costs[i] = (double) (forest.costs[i] + availableEdges[i].linearCost);
-                    // costs[i] = 1 / costs[i];
+                    costs[i] = 1 / costs[i];
                 }
             }
 

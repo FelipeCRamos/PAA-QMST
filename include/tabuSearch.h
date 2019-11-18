@@ -47,12 +47,11 @@ private:
         return (itr <= tabuTenure + inLog[neighbor.second] || itr <= tabuTenure + outLog[neighbor.first]);
     }
 
-    void updateTabu(neighborType neighborChosen, costType lastCost, Forest &forest, iterationType iteration, int &itrsNoImprove, Forest &bestSolution){
+    void updateTabu(neighborType neighborChosen, Forest &forest, iterationType iteration, int &itrsNoImprove, Forest &bestSolution){
         // printf("%d %\n", );
-        if(forest.cost < lastCost && iteration > 0){
+        if(forest.cost < bestSolution.cost && iteration > 0){
             // if we can decrease tabu tenure for in and out
             if(tabuTenure > tabuTenureMin) tabuTenure--;
-
         }else{
             // if we can increase tabu tenure for in and out
             if(tabuTenure < tabuTenureMax) tabuTenure++;
@@ -149,9 +148,8 @@ public:
                 neighborType nextNeighbor;
                 _findNeighbor(nextNeighbor, forest, itr);
 
-                costType lastCost = forest.cost; // retriving last cost
                 forest.goToNeighbor(nextNeighbor, availableEdges); // change solution
-                updateTabu(nextNeighbor, lastCost, forest, itr, itrsNoImprove, bestSolution); // updt tabu parameters
+                updateTabu(nextNeighbor, forest, itr, itrsNoImprove, bestSolution); // updt tabu parameters
                 maybeUpdtBest(forest, bestSolution); // maybe update best seen solution
                 itr++;
             }
@@ -170,25 +168,20 @@ public:
             destructiveHeuristic.destruct(forest, remEdges, availableEdges);
             constructiveHeuristic.construct(forest, availableEdges);
         }
-
-        std::cout << bestSolution << std::endl;
         return bestSolution;
     }
 
-    Forest runLocal(Forest &forest){
+    Forest runLocal(Forest &forest, Forest &globalBest){
         prepSearch();
         Forest bestSolution = forest; // best seen solution
 
         int itr = 0, itrsNoImprove = 0;
         while(itrsNoImprove < maxItrsNoImprove && itr < maxItrs){
-
             neighborType nextNeighbor;
-            _findNeighbor(nextNeighbor, forest, itr);
-
-            costType lastCost = forest.cost; // retriving last cost
-            printf("%d\n", lastCost);
+            if(!_findNeighbor(nextNeighbor, forest, itr)) break;
+            // printf("%d\n", lastCost);
             forest.goToNeighbor(nextNeighbor, availableEdges); // change solution
-            updateTabu(nextNeighbor, lastCost, forest, itr, itrsNoImprove, bestSolution); // updt tabu parameters
+            updateTabu(nextNeighbor, forest, itr, itrsNoImprove, globalBest); // updt tabu parameters
             maybeUpdtBest(forest, bestSolution); // maybe update best seen solution
             itr++;
         }

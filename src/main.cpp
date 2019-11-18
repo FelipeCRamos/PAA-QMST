@@ -20,7 +20,7 @@
 #include "particleSwarm.h"
 
 #define PTAG "[AGMQ] "
-#define debug false
+#define debug true
 
 // typedef std::pair<int, int> treeEdge;
 
@@ -78,8 +78,8 @@ int main(int argc, char **argv){
     // Definitions
     const bool runBBound = false;
     const bool runBackTrack = false;
-    const bool runSwarm = false;
-    const bool runTabu = true;
+    const bool runSwarm = true;
+    const bool runTabu = false;
 
     if(runBBound) {
 /*{{{*/
@@ -127,7 +127,16 @@ int main(int argc, char **argv){
         tsp.skewFactor = 1.0;
 
         TabuSearch ts(n, m, tsp, allEdges);
-        ts.run();
+
+        auto tsStartTime = std::chrono::high_resolution_clock::now();
+        auto result = ts.run().cost;
+        auto tsEndTime = std::chrono::high_resolution_clock::now();
+        auto tsElapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(tsEndTime - tsStartTime);
+
+        std::cout << "Tabu Search run stats: ";
+        std::cout << "n: " << n << "; m: " << m << "; solution: ";
+        std::cout << result << ";";
+        std::cout << "time (ms): " << tsElapsedTime.count() << ";";
 /*}}}*/
     }
 
@@ -139,12 +148,12 @@ int main(int argc, char **argv){
         std::cout << "\tCosts: " << std::endl;
 
         TabuSearchParameters tsp;
-        tsp.maxItrs = 20;
+        tsp.maxItrs = (int) pow(m*n, (0.5));
         tsp.maxItrsNoImprove = n;
         tsp.numTopSols = n;
         tsp.numTopNeighbors = m;
         tsp.tabuTenureMin = 1;
-        tsp.tabuTenureMax = (n * 0.4);
+        tsp.tabuTenureMax = (int) pow(n, (0.8));
         tsp.skewFactor = 1.0;
 
         PathRelinkingParameters prp;
@@ -153,19 +162,27 @@ int main(int argc, char **argv){
 
         ParticleSwarmParameters psp;
 
-        psp.maxItrs = 10;
-        psp.numParticles = 5;
+        psp.maxItrs = n;
+        psp.numParticles = (int) pow(m*n, (0.5));
         psp.probPRBestLocalStart = 0.05;
-        psp.probPRBestGlobalStart = 0.045;
-        psp.probLocalSearchStart = 0.95;
+        psp.probPRBestGlobalStart = 0.05;
+        psp.probLocalSearchStart = 0.9;
+        psp.probPRBestLocalDecay = powf(0.1/psp.probLocalSearchStart, (1.0/psp.maxItrs));
         psp.tabuSearchParameters = tsp;
         psp.pathRelinkingParameters = prp;
         psp.skewFactorConstructiveHeuristic = 1.0;
 
         ParticleSwarm ps(n, m, psp, allEdges);
 
-        ps.run();
+        auto psStartTime = std::chrono::high_resolution_clock::now();
+        auto result = ps.run().cost;
+        auto psEndTime = std::chrono::high_resolution_clock::now();
+        auto psElapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(psEndTime - psStartTime);
 
+        std::cout << "Particle Swarm run stats: ";
+        std::cout << "n: " << n << "; m: " << m << "; solution: ";
+        std::cout << result << ";";
+        std::cout << "time (ms): " << psElapsedTime.count() << ";";
 
     }
 

@@ -13,6 +13,7 @@ struct ParticleSwarmParameters{
     TabuSearchParameters tabuSearchParameters;
     PathRelinkingParameters pathRelinkingParameters;
     double skewFactorConstructiveHeuristic;
+    double probPRBestLocalDecay;
 };
 
 class ParticleSwarm{
@@ -27,23 +28,29 @@ private:
     //
     int maxItrs, numParticles;
     double probPRBestLocalStart, probPRBestGlobalStart, probLocalSearchStart;
+    double probPRBestLocalDecay;
     PathRelinkingParameters pathRelinkingParameters;
     TabuSearchParameters tabuSearchParameters;
     double skewFactorConstructiveHeuristic;
 
-    void maybeUpdtBest(Forest &forest, Forest &bestSolution){
+    bool maybeUpdtBest(Forest &forest, Forest &bestSolution){
         if(forest < bestSolution){
             bestSolution = forest;
-        }
+            return true;
+        }else return false;
     }
 
     void updateProbabilities(double &probPRBestLocal, double &probPRBestGlobal, double &probLocalSearch){
-        probLocalSearch *= 0.95;
-        probPRBestGlobal *= std::fmin(distUpdate(mt), 1);
+        double delta = probLocalSearch;
+        probLocalSearch *= probPRBestLocalDecay;
+        delta -= probLocalSearch;
+        probPRBestGlobal += std::fmin(distUpdate(mt) * delta, 1);
         probPRBestLocal = std::fmax(1 - (probPRBestGlobal + probLocalSearch), 0);
     }
 
-    int chooseVel(double probPRBestLocal, double probPRBestGlobal, double probLocalSearch){
+    int chooseVel(double probPRBestLocal, double probPRBestGlobal, double probLocalSearch, int noUpdtLocalBest){
+        if(noUpdtLocalBest) probLocalSearch /= (1 + noUpdtLocalBest);
+        
         std::uniform_real_distribution<double> distFlip(0.0, probPRBestLocal + probPRBestGlobal + probLocalSearch);
 
         while(true){
@@ -67,8 +74,9 @@ public:
         probPRBestLocalStart = particleSwarmParameters.probPRBestLocalStart;
         probPRBestGlobalStart = particleSwarmParameters.probPRBestGlobalStart;
         probLocalSearchStart = particleSwarmParameters.probLocalSearchStart;
+        probPRBestLocalDecay = particleSwarmParameters.probPRBestLocalDecay;
         mt = std::mt19937(rd());
-        distUpdate = std::uniform_real_distribution<double>(1.0, 1.1);
+        distUpdate = std::uniform_real_distribution<double>(0.0, 1.0);
         availableEdges = allEdges;
     }
 
@@ -82,6 +90,7 @@ public:
         std::vector<double> probsPRBestLocal(numParticles, probPRBestLocalStart);
         std::vector<double> probsPRBestGlobal(numParticles, probPRBestGlobalStart);
         std::vector<double> probsLocalSearch(numParticles, probLocalSearchStart);
+        std::vector<int> updtBestLocal(numParticles, 0);
 
         Forest bestGlobal(N, M, availableEdges);
         for(int i = 0; i < numParticles; ++i){
@@ -95,7 +104,6 @@ public:
 
 
         for(int itr = 0; itr < maxItrs; ++itr){
-            printf("itr: %d\n", itr);
             for(int i = 0; i < numParticles; ++i){
                 double probPRBestLocal = probsPRBestLocal[i];
                 double probPRBestGlobal = probsPRBestGlobal[i];
@@ -104,7 +112,7 @@ public:
                 if(particles[i] == bestParticles[i]) probPRBestLocal = 0;
                 if(particles[i] == bestGlobal) probPRBestGlobal = 0;
 
-                int vel = chooseVel(probPRBestLocal, probPRBestGlobal, probLocalSearch);
+                int vel = chooseVel(probPRBestLocal, probPRBestGlobal, probLocalSearch, updtBestLocal[i]);
 
 
                 if(vel == 0){ // path relink com o melhor local
@@ -112,14 +120,15 @@ public:
                 }else if(vel == 1){ // path relink com o melhor global
                     particles[i] = pathRelinking.run(particles[i], bestGlobal, bestGlobal.cost, availableEdges);
                 }else{ // busca local
-                    particles[i] = tabuSearch.runLocal(particles[i]);
+                    particles[i] = tabuSearch.runLocal(particles[i], bestGlobal);
                 }
-                printf("particles[i].cost: %d vel: %d\n", particles[i].cost, vel);
-                maybeUpdtBest(particles[i], bestGlobal);
+                // printf("particles[i].cost: %d vel: %d\n", particles[i].cost, vel);
+                if(maybeUpdtBest(particles[i], bestGlobal)) updtBestLocal[i] = 0;
+                else updtBestLocal[i]++;
+
                 updateProbabilities(probsPRBestLocal[i], probsPRBestGlobal[i], probsLocalSearch[i]);
             }
         }
-        std::cout << bestGlobal << std::endl;
         return bestGlobal;
     }
 };
