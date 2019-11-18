@@ -170,7 +170,7 @@ public:
             constructiveHeuristic.construct(forest, availableEdges);
         }
 
-        std::cout << bestSolution << std::endl;
+        // std::cout << bestSolution << std::endl;
         return bestSolution;
     }
 

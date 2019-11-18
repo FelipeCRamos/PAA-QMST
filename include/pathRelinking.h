@@ -240,6 +240,8 @@ namespace ParticleSwarm {
                     allocQuadraticCosts(this->edges.size());
 
                 int edgeCount = this->edges.size();
+                // int edgeCount = this->quadraticCosts.size();
+                // std::cout << "quadraticCosts.size() = " << edgeCount << std::endl;
                 if(debugPrints) std::cout << "\tEdges size: " << edgeCount
                     << std::endl;
 
@@ -568,7 +570,7 @@ namespace ParticleSwarm {
                     return one.getQuadraticCost() < another.getQuadraticCost();
                 };
 
-                // std::sort(this->trees.begin(), this->trees.end(), compareFunc);
+                std::sort(this->trees.begin(), this->trees.end(), compareFunc);
                 if(debugPrints) std::cout << "[advanceGeneration] Sorting done!" << std::endl;
                 {
                     if(debugPrints) std::cout << "Sorted trees: [ ";
@@ -598,7 +600,7 @@ namespace ParticleSwarm {
                 }
 
                 std::sort(nextGenerationTrees.begin(), nextGenerationTrees.end(), compareFunc);
-                std::cout << "Global best generation tree qCost: "
+                if(debugPrints) std::cout << "Global best generation tree qCost: "
                     << nextGenerationTrees[0].quadraticCost << std::endl;
 
                 this->trees = std::vector<Graph>(nextGenerationTrees);
@@ -692,6 +694,7 @@ namespace ParticleSwarm {
                 if(debugPrints) std::cout << "]\n";
 
                 // update quadratic costs
+                /*
                 for( auto &edge : genTree.edges ) {
                     // for each edge on added edges, get its index
                     int index = getEdgePosition(edge);
@@ -703,17 +706,25 @@ namespace ParticleSwarm {
                         genTree.quadraticCosts[offset] = this->originalGraph.quadraticCosts[offset];
                     }
                 }
+                */
+
+                for(int i = 0; i < originalGraph.numberOfEdges; i++) {
+                    for( int j = 0; j < originalGraph.numberOfEdges; j++ ) {
+                        int offset = i * originalGraph.numberOfEdges + j;
+                        genTree.quadraticCosts[offset] = originalGraph.quadraticCosts[offset];
+                    }
+                }
 
                 if(debugPrints) std::cout << "\tupdated qCosts: [ ";
                 for(auto &it : genTree.quadraticCosts) if(debugPrints) std::cout << it << " ";
                 if(debugPrints) std::cout << "]\n";
 
-                /*if(debugPrints)*/ std::cout << "\tgenerated kruskal tree: [ ";
+                if(debugPrints) std::cout << "\tgenerated kruskal tree: [ ";
                 for(auto &it : genTree.edges) {
-                    /*if(debugPrints)*/ std::cout << it.print() << "^" << getEdgePosition(it) << " ";
+                    if(debugPrints) std::cout << it.print() << "^" << getEdgePosition(it) << " ";
                 }
-                /*if(debugPrints)*/ std::cout << "] " << genTree.edges.size() << " ";
-                std::cout << genTree.getQuadraticCost() << std::endl;
+                if(debugPrints) std::cout << "] " << genTree.edges.size() << " ";
+                if(debugPrints) std::cout << genTree.getQuadraticCost() << std::endl;
 
                 genTree.updateNumbers();
 

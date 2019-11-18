@@ -21,7 +21,7 @@
 #include "pathRelinking.h"
 
 #define PTAG "[AGMQ] "
-#define debug true
+#define debug false
 
 // typedef std::pair<int, int> treeEdge;
 
@@ -77,10 +77,10 @@ int main(int argc, char **argv){
     // ------------------------------------------------------------------------
 
     // Definitions
-    const bool runBBound = false;
+    const bool runBBound = true;
     const bool runBackTrack = false;
     const bool runSwarm = true;
-    const bool runTabu = false;
+    const bool runTabu = true;
 
     if(runBBound) {
 /*{{{*/
@@ -91,12 +91,15 @@ int main(int argc, char **argv){
         auto bbEndTime = std::chrono::high_resolution_clock::now();
         auto bbElapsedTime = std::chrono::duration_cast<std::chrono::milliseconds>(bbEndTime - bbStartTime);
 
+        /*
         std::cout << "\nBranch and bound run stats: ";
         std::cout << "n: " << n << "; m: " << m << "; solution: ";
         std::cout << result << ";";
         std::cout << "time (ms): " << bbElapsedTime.count() << ";";
-        std::cout << "visited states: " << bb.steps() << std::endl << std::endl;
-        /*}}}*/
+        std::cout << "visited states: " << bb.steps() << std::endl;
+        */
+        std::cout << "Branch and bound run stats: solution: " << result << std::endl;
+/*}}}*/
     }
 
     if(runBackTrack) {
@@ -112,7 +115,7 @@ int main(int argc, char **argv){
         std::cout << "n: " << n << "; m: " << m << "; solution: ";
         std::cout << result << ";";
         std::cout << "time (ms): " << btElapsedTime.count() << ";";
-        std::cout << "visited states: " << b.steps() << std::endl << std::endl;
+        std::cout << "visited states: " << b.steps() << std::endl;
 /*}}}*/
     }
 
@@ -128,16 +131,18 @@ int main(int argc, char **argv){
         tsp.skewFactor = 1.0;
 
         TabuSearch ts(n, m, tsp, allEdges);
-        ts.run();
+        std::cout << ts.run() << std::endl;
 /*}}}*/
     }
 
     if(runSwarm) {
 /*{{{*/
+        /*
         std::cout << "~ Actual graph:" << std::endl;
         std::cout << "\tNodes: " << n << std::endl;
         std::cout << "\tEdges: " << m << std::endl;
         std::cout << "\tCosts: " << std::endl;
+        */
         // for( int aresta = 0; aresta < m; aresta++ ) {
             // for( int outraAresta = 0; outraAresta < m; outraAresta++ ) {
                 // printf("Aresta [%i][%i] = %i\n", aresta, outraAresta, costs[aresta][outraAresta]);
@@ -148,14 +153,16 @@ int main(int argc, char **argv){
 
         originalGraph.updateNumbers();
 
-        printf("--------------------- PARTICLE SWARM STARTS HERE\n");
-        auto particleSwarmAlgorithm = ParticleSwarm::ParticleSwarm(originalGraph, pow(10, 1));
+        // printf("--------------------- PARTICLE SWARM STARTS HERE\n");
+        auto particleSwarmAlgorithm = ParticleSwarm::ParticleSwarm(originalGraph, pow(10, 3));
 
-        for(int i = 0; i < 10; i++) {
-            std::cout << "[main] Generation " << i << std::endl;
-            auto result = particleSwarmAlgorithm.advanceGeneration();
-            std::cout << "\t\t-> Best tree: " << result << std::endl;
+        int result = 0;
+        for(int i = 0; i < 5; i++) {
+            // std::cout << "[main] Generation " << i << std::endl;
+            result = particleSwarmAlgorithm.advanceGeneration();
+            // std::cout << "\t\t-> Best tree: " << result << std::endl;
         }
+        std::cout << "particleSwarm run stats: solution: " << result << std::endl;
 
         /*
         for( int i = 0; i < 20; i++ ) {

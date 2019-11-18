@@ -200,10 +200,11 @@ class Forest{
 };
 
 std::ostream& operator<<(std::ostream& os, const Forest& f){
-    os << "Floresta: n: " << f.N << " m: " << f.M << " cost: " << f.cost << "\n";
-    os << "Ids das arestas na arvore: ";
-    for(auto &e : f.edgeList) os << e << " ";
-    os << "\n";
+    os << "TabuSearch run stats: solution: " <<  f.cost;
+    // os << "Floresta: n: " << f.N << " m: " << f.M << " cost: " << f.cost << "\n";
+    // os << "Ids das arestas na arvore: ";
+    // for(auto &e : f.edgeList) os << e << " ";
+    // os << "\n";
     return os;
 }
 
